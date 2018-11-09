@@ -124,12 +124,20 @@ describe('The build-object-better package', () => {
   })
 
   describe('with a single argument which is an iterable', () => {
-    testCall('should assume each element of the array is a two-tuple array of key and value pairs',
+    testCall('elements which are arrays should be used as key, value pairs in that order',
       [['a', 'Alpha'], ['b', 'Bravo'], ['c', 'Charlie']],
       {
         a: 'Alpha',
         b: 'Bravo',
         c: 'Charlie'
+      }
+    )
+
+    testCall('elements which Objects but not arrays should provide "key" and "value" properties',
+      [{ key: 'a', value: 'alpha' }, { key: 'c', value: 'charles' }],
+      {
+        a: 'alpha',
+        c: 'charles'
       }
     )
   })
