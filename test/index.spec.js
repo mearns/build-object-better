@@ -104,7 +104,7 @@ describe('The build-object-better package', () => {
     testCall('Should support an object with a Symbol.iterator function as the keys',
       {
         [Symbol.iterator]: () => {
-          let i = 0;
+          let i = 0
           return {
             next: () => {
               if (i < 3) {
@@ -122,10 +122,21 @@ describe('The build-object-better package', () => {
       }
     )
   })
+
+  describe('with a single argument which is an iterable', () => {
+    testCall('should assume each element of the array is a two-tuple array of key and value pairs',
+      [['a', 'Alpha'], ['b', 'Bravo'], ['c', 'Charlie']],
+      {
+        a: 'Alpha',
+        b: 'Bravo',
+        c: 'Charlie'
+      }
+    )
+  })
 })
 
 function testCall (should, ...args) {
-  const callArgs = args.slice(0, args.length)
+  const callArgs = args.slice(0, args.length - 1)
   const expected = args[args.length - 1]
   it(should, () => {
     const result = bob(...callArgs)
