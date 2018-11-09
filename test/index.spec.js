@@ -36,4 +36,15 @@ describe('The build-object-better package', () => {
       })
     })
   })
+
+  describe('with an array of keys, and an array of values', () => {
+    it('should use keys as keys and values as values', () => {
+      const result = bob(['a', 'b', 'c'], ['alpha', 'bravo', 'charlie'])
+      expect(result).to.deep.equal({
+        a: 'alpha',
+        b: 'bravo',
+        c: 'charlie'
+      })
+    })
+  })
 })
