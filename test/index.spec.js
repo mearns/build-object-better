@@ -47,4 +47,15 @@ describe('The build-object-better package', () => {
       })
     })
   })
+
+  describe('with an array of keys, and an object of values', () => {
+    it('should use keys as keys, and select the same properties from the given source object as the values', () => {
+      const result = bob(['a', 'c', 'd'], { b: 'Banana', 0: 'Zero', a: 'Apple', d: 'Data', c: 'Cookie', e: 'Eggs' })
+      expect(result).to.deep.equal({
+        a: 'Apple',
+        c: 'Cookie',
+        d: 'Data'
+      })
+    })
+  })
 })
