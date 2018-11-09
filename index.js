@@ -3,13 +3,17 @@ module.exports = function buildObjectBetter (...args) {
   const o = {}
   if (args.length === 1) {
     const [entries] = args
-    let e
-    for (e of entries) {
-      if (Array.isArray(e)) {
-        o[e[0]] = e[1]
-      } else if (typeof e === 'object') {
-        o[e.key] = e.value
+    if (entries && typeof entries[Symbol.iterator] === 'function') {
+      let e
+      for (e of entries) {
+        if (Array.isArray(e)) {
+          o[e[0]] = e[1]
+        } else if (typeof e === 'object') {
+          o[e.key] = e.value
+        }
       }
+    } else {
+      return Object.assign({}, entries)
     }
   } else {
     let k

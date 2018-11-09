@@ -153,6 +153,22 @@ describe('The build-object-better package', () => {
       }
     )
   })
+
+  describe('with a single argument, which is an object', () => {
+    it('should shallowly clone the object', () => {
+      const deepValue = [1, 2, 3, 4]
+      const testObject = { 1: 'one', 2: 'two', 3: deepValue }
+      const result = bob(testObject)
+
+      expect(result).to.deep.equal({
+        1: 'one',
+        2: 'two',
+        3: deepValue
+      })
+      expect(result != testObject)
+      expect(result[3] === deepValue)
+    })
+  })
 })
 
 function testCall (should, ...args) {
