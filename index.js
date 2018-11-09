@@ -9,9 +9,10 @@ module.exports = function buildObjectBetter (keys, valueGenerator) {
     valueGenerator = k => source[k]
   }
   let k
-  for (let i = 0; i < keys.length; i++) {
-    k = keys[i]
+  let i = 0
+  for (k of keys) {
     o[k] = valueGenerator(k, i, keys)
+    i++
   }
   return o
 }

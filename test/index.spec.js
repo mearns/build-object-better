@@ -58,4 +58,77 @@ describe('The build-object-better package', () => {
       })
     })
   })
+
+  describe('Using other iterables of keys', () => {
+    testCall('should support a string as the keys',
+      'abcd', { a: 'Alpha', c: 'Cookie', d: 'Donut' },
+      {
+        a: 'Alpha',
+        b: undefined,
+        c: 'Cookie',
+        d: 'Donut'
+      }
+    )
+
+    testCall('should support a TypedArray of keys',
+      new Uint8Array([0x00, 0x7F, 0xFF]), ['first', 'second', 'third'],
+      {
+        '0': 'first',
+        '127': 'second',
+        '255': 'third'
+      }
+    )
+
+    testCall('should support a Set of keys',
+      new Set(['a', 'a', 'b', 'd', 'b', 'c']), (k, i) => `${k}-${i}`,
+      {
+        a: 'a-0',
+        b: 'b-1',
+        d: 'd-2',
+        c: 'c-3'
+      }
+    )
+
+    ;(function () {
+      testCall('should support an arguments object of keys',
+        arguments, (k, i) => `${k.toUpperCase()}-${i + 1}`,
+        {
+          a: 'A-1',
+          c: 'C-2',
+          b: 'B-3',
+          f: 'F-4'
+        }
+      )
+    })('a', 'c', 'b', 'f')
+
+    testCall('Should support an object with a Symbol.iterator function as the keys',
+      {
+        [Symbol.iterator]: () => {
+          let i = 0;
+          return {
+            next: () => {
+              if (i < 3) {
+                return { value: i++, done: false }
+              }
+              return { done: true }
+            }
+          }
+        }
+      }, ['un', 'deux', 'trois'],
+      {
+        0: 'un',
+        1: 'deux',
+        2: 'trois'
+      }
+    )
+  })
 })
+
+function testCall (should, ...args) {
+  const callArgs = args.slice(0, args.length)
+  const expected = args[args.length - 1]
+  it(should, () => {
+    const result = bob(...callArgs)
+    expect(result).to.deep.equal(expected)
+  })
+}
