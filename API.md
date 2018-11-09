@@ -1,25 +1,6 @@
-# build-object-better
-
-A javascript package for building objects from their properties. Meant to be a replacement for all of your:
-
-```javascript
-const object = keys.reduce((o, k) => {
-  o[k] = figureOutValue(k)
-  return o
-}, {})
-```
-
-Instead:
-
-```javascript
-const object = bob(keys, figureOutValue)
-```
-
-## API
-
 <a name="module_build-object-better"></a>
 
-### `bob(...args)`
+### bob(...args)
 The module exports a single function (referred to here as `bob`) that is used for building an object in various ways. Different signatures are available as described below.
 
 In general, there are two ways to use the function: with one argument, or with two. With one argument, that argument fully specifies the properties

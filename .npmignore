@@ -4,6 +4,7 @@ node_modules/
 .vscode/
 coverage/
 logs/
+out/
 npmpackagejsonlint.config.js
 .editorconfig
 .gitignore

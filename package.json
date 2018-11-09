@@ -40,12 +40,13 @@
     "test": "nyc mocha --recursive ./test",
     "verify": "npm-run-all check test",
     "compile": "echo \"Nothing to build for this project, runs from src.\"",
-    "docs": "jsdoc --recurse --readme README.md --destination out/jsdocs --package package.json index.js lib/",
+    "docs": "jsdoc --recurse --destination out/jsdocs --package package.json --configure jsdoc.conf.json index.js",
     "build": "npm-run-all clean verify compile"
   },
   "devDependencies": {
     "chai": "4.2.0",
     "jsdoc": "3.5.5",
+    "jsdoc-to-markdown": "4.0.1",
     "mocha": "5.2.0",
     "npm-package-json-lint": "3.3.0",
     "npm-run-all": "4.1.3",

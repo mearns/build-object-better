@@ -165,7 +165,7 @@ describe('The build-object-better package', () => {
         2: 'two',
         3: deepValue
       })
-      expect(result != testObject)
+      expect(result !== testObject)
       expect(result[3] === deepValue)
     })
   })
