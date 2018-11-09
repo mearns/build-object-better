@@ -23,18 +23,22 @@ function fromTwoArgs (keys, valueGenerator) {
   return o
 }
 
+function fromEntriesIterable (entries) {
+  const o = {}
+  let e
+  for (e of entries) {
+    if (Array.isArray(e)) {
+      o[e[0]] = e[1]
+    } else if (typeof e === 'object') {
+      o[e.key] = e.value
+    }
+  }
+  return o
+}
+
 function fromOneArg (entries) {
   if (entries && typeof entries[Symbol.iterator] === 'function') {
-    const o = {}
-    let e
-    for (e of entries) {
-      if (Array.isArray(e)) {
-        o[e[0]] = e[1]
-      } else if (typeof e === 'object') {
-        o[e.key] = e.value
-      }
-    }
-    return o
+    return fromEntriesIterable(entries)
   } else {
     return Object.assign({}, entries)
   }
