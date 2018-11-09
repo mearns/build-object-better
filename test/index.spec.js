@@ -123,6 +123,18 @@ describe('The build-object-better package', () => {
     )
   })
 
+  describe('when a primitive is given as the second argument', () => {
+    testCall('should use a string value as the value for all properties',
+      [1, 2, 3, 4], 'my-value',
+      {
+        1: 'my-value',
+        2: 'my-value',
+        3: 'my-value',
+        4: 'my-value'
+      }
+    )
+  })
+
   describe('with a single argument which is an iterable', () => {
     testCall('elements which are arrays should be used as key, value pairs in that order',
       [['a', 'Alpha'], ['b', 'Bravo'], ['c', 'Charlie']],

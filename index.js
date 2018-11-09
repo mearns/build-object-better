@@ -14,12 +14,17 @@ module.exports = function buildObjectBetter (...args) {
   } else {
     let k
     let [keys, valueGenerator] = args
-    if (Array.isArray(valueGenerator)) {
-      const values = valueGenerator
-      valueGenerator = (k, i) => values[i]
-    } else if (typeof valueGenerator !== 'function') {
-      const source = valueGenerator
-      valueGenerator = k => source[k]
+    if (typeof valueGenerator !== 'function') {
+      if (Array.isArray(valueGenerator)) {
+        const values = valueGenerator
+        valueGenerator = (k, i) => values[i]
+      } else if (typeof valueGenerator === 'object') {
+        const source = valueGenerator
+        valueGenerator = k => source[k]
+      } else {
+        const constantValue = valueGenerator
+        valueGenerator = () => constantValue
+      }
     }
     let i = 0
     for (k of keys) {
