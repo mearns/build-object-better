@@ -1,9 +1,9 @@
 {
   "name": "build-object-better",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Utilities for building out object from properties",
   "main": "index.js",
-  "umd": "umd/build-object-better.min.js",
+  "unpkg": "umd/build-object-better.min.js",
   "keywords": [
     "object builder",
     "objects",
