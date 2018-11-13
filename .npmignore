@@ -8,3 +8,4 @@ out/
 npmpackagejsonlint.config.js
 .editorconfig
 .gitignore
+dist/

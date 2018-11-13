@@ -44,9 +44,11 @@
     "build": "npm-run-all clean verify compile"
   },
   "devDependencies": {
+    "bluebird": "3.5.3",
     "chai": "4.2.0",
     "jsdoc": "3.5.5",
     "jsdoc-to-markdown": "4.0.1",
+    "mkdirp": "0.5.1",
     "mocha": "5.2.0",
     "npm-package-json-lint": "3.3.0",
     "npm-run-all": "4.1.3",
