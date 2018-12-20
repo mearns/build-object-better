@@ -1,6 +1,6 @@
 {
   "name": "build-object-better",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Utilities for building out object from properties",
   "main": "index.js",
   "keywords": [
