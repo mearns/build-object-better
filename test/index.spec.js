@@ -5,9 +5,143 @@
 const bob = require('..')
 
 // Support
-const { expect } = require('chai')
+const chai = require('chai')
+const { expect } = chai
+const sinon = require('sinon')
+const sinonChai = require('sinon-chai')
+
+chai.use(sinonChai)
 
 describe('The build-object-better package', () => {
+  describe('with a key-supplier object and a value-supplier function', () => {
+    testCall('should use the object to select keys and suppliers for values of generated object',
+      ['a', 'b', 'c', 'd'], // iterable
+      { a: 'w', c: 'y', d: 'z', b: 'x' }, // key supplier
+      (k, i, keys, e, es) => [k, i, keys, e, es], // value supplier
+      {
+        'w': ['w', 0, ['w', 'x', 'y', 'z'], 'a', ['a', 'b', 'c', 'd']],
+        'x': ['x', 1, ['w', 'x', 'y', 'z'], 'b', ['a', 'b', 'c', 'd']],
+        'y': ['y', 2, ['w', 'x', 'y', 'z'], 'c', ['a', 'b', 'c', 'd']],
+        'z': ['z', 3, ['w', 'x', 'y', 'z'], 'd', ['a', 'b', 'c', 'd']]
+      }
+    )
+  })
+
+  describe('with a key-supplier array and a value-supplier function', () => {
+    testCall('should use the array of keys and suppliers for values of generated object',
+      ['a', 'b', 'c', 'd'], // iterable
+      ['w', 'x', 'y', 'z'], // key supplier
+      (k, i, keys, e, es) => [k, i, keys, e, es], // value supplier
+      {
+        'w': ['w', 0, ['w', 'x', 'y', 'z'], 'a', ['a', 'b', 'c', 'd']],
+        'x': ['x', 1, ['w', 'x', 'y', 'z'], 'b', ['a', 'b', 'c', 'd']],
+        'y': ['y', 2, ['w', 'x', 'y', 'z'], 'c', ['a', 'b', 'c', 'd']],
+        'z': ['z', 3, ['w', 'x', 'y', 'z'], 'd', ['a', 'b', 'c', 'd']]
+      }
+    )
+  })
+
+  describe('with a key-supplier function and a value-supplier function', () => {
+    testCall('should use the suppliers for keys and values of generated object',
+      ['a', 'b', 'c', 'd'], // iterable
+      (e, i, es) => `${e}-${i}-${es.join('_')}`, // Key supplier
+      (k, i, keys, e, es) => [k, i, keys, e, es], // value supplier
+      {
+        'a-0-a_b_c_d': ['a-0-a_b_c_d', 0, ['a-0-a_b_c_d', 'b-1-a_b_c_d', 'c-2-a_b_c_d', 'd-3-a_b_c_d'], 'a', ['a', 'b', 'c', 'd']],
+        'b-1-a_b_c_d': ['b-1-a_b_c_d', 1, ['a-0-a_b_c_d', 'b-1-a_b_c_d', 'c-2-a_b_c_d', 'd-3-a_b_c_d'], 'b', ['a', 'b', 'c', 'd']],
+        'c-2-a_b_c_d': ['c-2-a_b_c_d', 2, ['a-0-a_b_c_d', 'b-1-a_b_c_d', 'c-2-a_b_c_d', 'd-3-a_b_c_d'], 'c', ['a', 'b', 'c', 'd']],
+        'd-3-a_b_c_d': ['d-3-a_b_c_d', 3, ['a-0-a_b_c_d', 'b-1-a_b_c_d', 'c-2-a_b_c_d', 'd-3-a_b_c_d'], 'd', ['a', 'b', 'c', 'd']]
+      }
+    )
+
+    it('should pass the supplied key value as the first argument to the value-supplier', () => {
+      const keySupplier = e => e.toUpperCase()
+      const valueSupplier = sinon.stub().returnsArg(0)
+      const iterable = ['a', 'b', 'c', 'd']
+      bob(iterable, keySupplier, valueSupplier)
+
+      iterable.forEach(e => {
+        expect(valueSupplier).to.have.been.calledWith(keySupplier(e))
+      })
+    })
+
+    it('should pass the index as the second argument to the value-supplier', () => {
+      const keySupplier = e => e.toUpperCase()
+      const valueSupplier = sinon.stub().returnsArg(0)
+      const iterable = ['a', 'b', 'c', 'd']
+      bob(iterable, keySupplier, valueSupplier)
+
+      iterable.forEach((e, i) => {
+        expect(valueSupplier).to.have.been.calledWith(keySupplier(e), i)
+      })
+    })
+
+    it('should pass the entire key collection as the third argument to the value-supplier', () => {
+      const keySupplier = e => e.toUpperCase()
+      const valueSupplier = sinon.stub().returnsArg(0)
+      const iterable = ['a', 'b', 'c', 'd']
+      const keys = iterable.map(keySupplier)
+      bob(iterable, keySupplier, valueSupplier)
+
+      iterable.forEach((e, i) => {
+        expect(valueSupplier).to.have.been.calledWith(keySupplier(e), i, keys)
+      })
+    })
+
+    it('should pass the iterable value as the fourth argument to the value-supplier', () => {
+      const keySupplier = e => e.toUpperCase()
+      const valueSupplier = sinon.stub().returnsArg(0)
+      const iterable = ['a', 'b', 'c', 'd']
+      bob(iterable, keySupplier, valueSupplier)
+
+      iterable.forEach((e, i) => {
+        expect(valueSupplier).to.have.been.calledWith(keySupplier(e), i, sinon.match.any, e)
+      })
+    })
+
+    it('should pass the entire iterable as the fifth argument to the value-supplier', () => {
+      const keySupplier = e => e.toUpperCase()
+      const valueSupplier = sinon.stub().returnsArg(0)
+      const iterable = ['a', 'b', 'c', 'd']
+      bob(iterable, keySupplier, valueSupplier)
+
+      iterable.forEach((e, i) => {
+        expect(valueSupplier).to.have.been.calledWith(keySupplier(e), i, sinon.match.any, e, iterable)
+      })
+    })
+
+    it('should pass the iterable value as the first argument to the key-supplier', () => {
+      const keySupplier = sinon.stub().returnsArg(0)
+      const valueSupplier = () => null
+      const iterable = ['a', 'b', 'c', 'd']
+      bob(iterable, keySupplier, valueSupplier)
+
+      iterable.forEach(e => {
+        expect(keySupplier).to.have.been.calledWith(e)
+      })
+    })
+
+    it('should pass the iterable index as the second argument to the key-supplier', () => {
+      const keySupplier = sinon.stub().returnsArg(0)
+      const valueSupplier = () => null
+      const iterable = ['a', 'b', 'c', 'd']
+      bob(iterable, keySupplier, valueSupplier)
+
+      iterable.forEach((e, i) => {
+        expect(keySupplier).to.have.been.calledWith(e, i)
+      })
+    })
+
+    it('should pass the iterable as the third argument to the key-supplier', () => {
+      const keySupplier = sinon.stub().returnsArg(0)
+      const valueSupplier = () => null
+      const iterable = ['a', 'b', 'c', 'd']
+      bob(iterable, keySupplier, valueSupplier)
+
+      expect(keySupplier).to.have.been.calledWith(sinon.match.any, sinon.match.any, iterable).with.callCount(iterable.length)
+    })
+  })
+
   describe('with an array of keys and a value generating function', () => {
     it('should pass the key as the first argument to the generating function', () => {
       const result = bob(['a', 'b', 'c'], k => k.toUpperCase())

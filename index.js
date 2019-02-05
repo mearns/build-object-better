@@ -6,41 +6,76 @@ const util = require('util')
 
 const implicitConstantValueSupplierOfUnsupportedType = util.deprecate(
   (constantValue) => () => constantValue,
-  'Starting in version 1.0, only constant values of type string, number, boolean, undefined, and null will be implicitly supported as suppliers.'
+  'Starting in version 2.0, only constant values of type string, number, boolean, undefined, and null will be implicitly supported as suppliers.'
 )
 
-function parseValueGenerator (valueGenerator) {
-  if (typeof valueGenerator === 'function') {
-    return valueGenerator
-  } else if (Array.isArray(valueGenerator)) {
-    const values = valueGenerator
+function parseValueSupplier (valueSupplier) {
+  if (typeof valueSupplier === 'function') {
+    return valueSupplier
+  } else if (Array.isArray(valueSupplier)) {
+    const values = valueSupplier
     return (k, i) => values[i]
-  } else if (typeof valueGenerator === 'object' && valueGenerator !== null) {
-    const source = valueGenerator
+  } else if (typeof valueSupplier === 'object' && valueSupplier !== null) {
+    const source = valueSupplier
     return k => source[k]
   } else if (!(
-    valueGenerator == null ||
-    typeof valueGenerator === 'string' ||
-    typeof valueGenerator === 'number' ||
-    typeof valueGenerator === 'boolean' ||
-    typeof valueGenerator === 'undefined'
+    valueSupplier == null ||
+    typeof valueSupplier === 'string' ||
+    typeof valueSupplier === 'number' ||
+    typeof valueSupplier === 'boolean' ||
+    typeof valueSupplier === 'undefined'
   )) {
-    const constantValue = valueGenerator
+    const constantValue = valueSupplier
     return () => constantValue
   } else {
-    return implicitConstantValueSupplierOfUnsupportedType(valueGenerator)
+    return implicitConstantValueSupplierOfUnsupportedType(valueSupplier)
   }
 }
 
-function fromTwoArgs (keys, valueGenerator) {
+function parseKeySupplier (keySupplier) {
+  if (typeof keySupplier === 'function') {
+    return keySupplier
+  } else if (Array.isArray(keySupplier)) {
+    const values = keySupplier
+    return (e, i) => values[i]
+  } else if (typeof keySupplier === 'object' && keySupplier !== null) {
+    const source = keySupplier
+    return e => source[e]
+  }
+  throw new Error(`Invalid key supplier, of type ${typeof keySupplier}`)
+}
+
+function fromTwoArgs (keys, valueSupplier) {
   const o = {}
   let k
-  valueGenerator = parseValueGenerator(valueGenerator)
+  let i = 0
+  valueSupplier = parseValueSupplier(valueSupplier)
+  for (k of keys) {
+    o[k] = valueSupplier(k, i, keys)
+    i++
+  }
+  return o
+}
+
+function fromThreeArgs (iterable, keySupplier, valueSupplier) {
+  const o = {}
+  const keys = []
+  const allvit = []
+  let e
+  let k
+  keySupplier = parseKeySupplier(keySupplier)
+  valueSupplier = parseValueSupplier(valueSupplier)
 
   let i = 0
-  for (k of keys) {
-    o[k] = valueGenerator(k, i, keys)
+  for (e of iterable) {
+    k = keySupplier(e, i, iterable)
+    keys.push(k)
+    allvit.push([k, e, i])
     i++
+  }
+
+  for ([k, e, i] of allvit) {
+    o[k] = valueSupplier(k, i, keys, e, iterable)
   }
   return o
 }
@@ -82,15 +117,11 @@ module.exports = function buildObjectBetter (...args) {
     return fromOneArg(args[0])
   } else if (args.length === 2) {
     return fromTwoArgs(...args)
-  } else {
-    return handleIncorrectNumberOfArguments(args)
+  } else if (args.length === 3) {
+    return fromThreeArgs(...args)
   }
+  throw new Error('Incorrect number of arguments: expected 1, 2, or 3')
 }
-
-const handleIncorrectNumberOfArguments = util.deprecate(
-  args => fromTwoArgs(...args),
-  'Incorrect number of arguments: expected 1 or 2 args: starting in version 1.0, this will be an error'
-)
 
 /**
  * Build an object from an iterable of property names and a function to generate corresponding values for each one.
