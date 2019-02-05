@@ -51,7 +51,7 @@ function fromTwoArgs (keys, valueSupplier) {
   let i = 0
   valueSupplier = parseValueSupplier(valueSupplier)
   for (k of keys) {
-    o[k] = valueSupplier(k, i, keys)
+    o[k] = valueSupplier(k, i, keys, k, keys)
     i++
   }
   return o
