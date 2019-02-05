@@ -2,21 +2,40 @@
  * @module build-object-better
  */
 
+const util = require('util')
+
+const implicitConstantValueSupplierOfUnsupportedType = util.deprecate(
+  (constantValue) => () => constantValue,
+  'Starting in version 1.0, only constant values of type string, number, boolean, undefined, and null will be implicitly supported as suppliers.'
+)
+
+function parseValueGenerator (valueGenerator) {
+  if (typeof valueGenerator === 'function') {
+    return valueGenerator
+  } else if (Array.isArray(valueGenerator)) {
+    const values = valueGenerator
+    return (k, i) => values[i]
+  } else if (typeof valueGenerator === 'object' && valueGenerator !== null) {
+    const source = valueGenerator
+    return k => source[k]
+  } else if (!(
+    valueGenerator == null ||
+    typeof valueGenerator === 'string' ||
+    typeof valueGenerator === 'number' ||
+    typeof valueGenerator === 'boolean' ||
+    typeof valueGenerator === 'undefined'
+  )) {
+    const constantValue = valueGenerator
+    return () => constantValue
+  } else {
+    return implicitConstantValueSupplierOfUnsupportedType(valueGenerator)
+  }
+}
+
 function fromTwoArgs (keys, valueGenerator) {
   const o = {}
   let k
-  if (typeof valueGenerator !== 'function') {
-    if (Array.isArray(valueGenerator)) {
-      const values = valueGenerator
-      valueGenerator = (k, i) => values[i]
-    } else if (typeof valueGenerator === 'object') {
-      const source = valueGenerator
-      valueGenerator = k => source[k]
-    } else {
-      const constantValue = valueGenerator
-      valueGenerator = () => constantValue
-    }
-  }
+  valueGenerator = parseValueGenerator(valueGenerator)
 
   let i = 0
   for (k of keys) {
@@ -61,10 +80,17 @@ function fromOneArg (entries) {
 module.exports = function buildObjectBetter (...args) {
   if (args.length === 1) {
     return fromOneArg(args[0])
-  } else {
+  } else if (args.length === 2) {
     return fromTwoArgs(...args)
+  } else {
+    return handleIncorrectNumberOfArguments(args)
   }
 }
+
+const handleIncorrectNumberOfArguments = util.deprecate(
+  args => fromTwoArgs(...args),
+  'Incorrect number of arguments: expected 1 or 2 args: starting in version 1.0, this will be an error'
+)
 
 /**
  * Build an object from an iterable of property names and a function to generate corresponding values for each one.
@@ -85,8 +111,8 @@ module.exports = function buildObjectBetter (...args) {
  * @memberof module:build-object-better
  * @function
  * @param {Iterable<*>} keys An iterable (e.g., an Array) describing the keys (i.e. property names) that your object will be given.
- * @param {Array<*>} values An array of property values for your object. These will be "zipped" with the provided keys, so the 3rd
- * key in `keys` will be assigned the third element (index `2`) in `values`.
+ * @param {Array<*>} values An array of property values for your object. These will be "zipped" with the provided keys, so, for instance,
+ * the third key in `keys` will be assigned the third element (index `2`) in `values`.
  */
 
 /**
