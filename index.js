@@ -2,13 +2,6 @@
  * @module build-object-better
  */
 
-const util = require('util')
-
-const implicitConstantValueSupplierOfUnsupportedType = util.deprecate(
-  (constantValue) => () => constantValue,
-  'Starting in version 1.0, only constant values of type string, number, boolean, undefined, and null will be implicitly supported as suppliers.'
-)
-
 function parseValueSupplier (valueSupplier) {
   if (typeof valueSupplier === 'function') {
     return valueSupplier
@@ -23,12 +16,13 @@ function parseValueSupplier (valueSupplier) {
     typeof valueSupplier === 'string' ||
     typeof valueSupplier === 'number' ||
     typeof valueSupplier === 'boolean' ||
-    typeof valueSupplier === 'undefined'
+    typeof valueSupplier === 'undefined' ||
+    typeof valueSupplier === 'symbol'
   ) {
     const constantValue = valueSupplier
     return () => constantValue
   } else {
-    return implicitConstantValueSupplierOfUnsupportedType(valueSupplier)
+    throw new TypeError(`Invalid value supplier of type ${typeof valueSupplier}`)
   }
 }
 
