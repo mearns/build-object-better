@@ -44,6 +44,12 @@ For the `valueSupplier` only, an additional option is to pass in a primitive val
 a constant value for all supplier requests. This is not available as the `keySupplier` because there's no
 apparent need to go through such lengths to build an object with a single property.
 
+Alternatively, the function can be invoked with a single argument. If this argument is an iterable object,
+then the elements of the iterable define the properties of the build object, either as an array of two
+elements (`[key, value]`), or as an object with a `key` and `value` property.
+
+If the single argument is a non-iterable object, then it is shallow copied.
+
 ## API
 
 <a name="module_build-object-better"></a>
@@ -65,12 +71,45 @@ value for each property.
 
 <a name="module_build-object-better--module.exports.bob"></a>
 
+#### `bob(iterable, keyCalculator, valueCalculator)`
+Build an object from an iterable, with functions to generate the keys and values of the object's properties.
+
+Other options for the `valueCalculator` as described in the subsequent signatures are also allowed here.
+
+| Param | Type | Description |
+| --- | --- | --- |
+| iterable | <code>Iterable.&lt;\*&gt;</code> | An iterable (e.g., an Array) that will be iterated over to generate the property names (keys) and values of the built object.
+| keyCalculator | <code>function(elem:\*, idx:number, iterable:Iterable):string</code> | A function that is used to generate the keys (i.e. property names) that your object will be given, based on the elements of `iterable`. |
+| valueCalculator | <code>function(key:string, idx:number, keys:Iterable.&lt;string&gt;, elem:\*, iterable:Iterable.&lt;\*&gt;):\*</code> | A function that is used to generate the values of your object's properties. It is invoked once for each of the generated keys, with the key itself, the index of the key in `keys`, and the complete `keys` iterable as arguments. Two additional arguments are the corresponding element from the given `iterable`, and the `iterable` itself. |
+
+#### `bob(iterable, keys, valueCalculator)`
+Build an object from an iterable, an array of corresponding keys (property names), and a function to generate the values of the object's properties.
+
+Other options for the `valueCalculator` as described in the subsequent signatures are also allowed here.
+
+| Param | Type | Description |
+| --- | --- | --- |
+| iterable | <code>Iterable.&lt;\*&gt;</code> | An iterable (e.g., an Array) that will be iterated over to generate the property names (keys) and values of the built object.
+| keys | <code>Iterable.&lt;string&gt;</code> | An iterable (e.g., an Array) describing the keys (i.e. property names) that your object will be given.|
+| valueCalculator | <code>function(key:string, idx:number, keys:Iterable.&lt;string&gt;, elem:\*, iterable:Iterable.&lt;\*&gt;):\*</code> | A function that is used to generate the values of your object's properties. It is invoked once for each of the generated keys, with the key itself, the index of the key in `keys`, and the complete `keys` iterable as arguments. Two additional arguments are the corresponding element from the given `iterable`, and the `iterable` itself. |
+
+#### `bob(iterable, keyMap, valueCalculator)`
+Build an object from an iterable, a map of elements to keys (property names), and a function to generate the values of the object's properties.
+
+Other options for the `valueCalculator` as described in the subsequent signatures are also allowed here.
+
+| Param | Type | Description |
+| --- | --- | --- |
+| iterable | <code>Iterable.&lt;string&gt;</code> | An iterable (e.g., an Array) that will be iterated over to generate the property names (keys) and values of the built object.
+| keyMap | <code>Object</code> | An object mapping elements of `iterable` to keys (i.e., property names for the built object).|
+| valueCalculator | <code>function(key:string, idx:number, keys:Iterable.&lt;string&gt;, elem:string, iterable:Iterable.&lt;string&gt;):\*</code> | A function that is used to generate the values of your object's properties. It is invoked once for each of the generated keys, with the key itself, the index of the key in `keys`, and the complete `keys` iterable as arguments. Two additional arguments are the corresponding element from the given `iterable`, and the `iterable` itself. |
+
 #### `bob(keys, valueCalculator)`
 Build an object from an iterable of property names and a function to generate corresponding values for each one.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| keys | <code>Iterable.&lt;\*&gt;</code> | An iterable (e.g., an Array) describing the keys (i.e. property names) that your object will be given. |
+| keys | <code>Iterable.&lt;string&gt;</code> | An iterable (e.g., an Array) describing the keys (i.e. property names) that your object will be given. |
 | valueCalculator | <code>function(key:\*, idx:number, keys:Iterable):\*</code> | A function that is used to generate the values of your object's properties. It is invoked once for each of the provided keys, with the key itself, the index of the key in `keys`, and the complete `keys` iterable as arguments. |
 
 <a name="module_build-object-better--module.exports.bob"></a>
@@ -82,7 +121,7 @@ Build an object from a sequence of property names and corresponding property val
 
 | Param | Type | Description |
 | --- | --- | --- |
-| keys | <code>Iterable.&lt;\*&gt;</code> | An iterable (e.g., an Array) describing the keys (i.e. property names) that your object will be given. |
+| keys | <code>Iterable.&lt;string&gt;</code> | An iterable (e.g., an Array) describing the keys (i.e. property names) that your object will be given. |
 | values | <code>Array.&lt;\*&gt;</code> | An array of property values for your object. These will be "zipped" with the provided keys, so the 3rd key in `keys` will be assigned the third element (index `2`) in `values`. |
 
 <a name="module_build-object-better--module.exports.bob"></a>
@@ -92,7 +131,7 @@ Build an object by copying a specified set of properties from another object.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| keys | <code>Iterable.&lt;\*&gt;</code> | An iterable (e.g., an Array) describing the keys (i.e. property names) that your object will be given. |
+| keys | <code>Iterable.&lt;string&gt;</code> | An iterable (e.g., an Array) describing the keys (i.e. property names) that your object will be given. |
 | source | <code>Object</code> | An object from which property values will be copied. For each key in `keys`, the value for that property will be taken as the value of the property with the same name from this object. Note that this will walk the entire prototype chain as needed to find the property, and produce an `undefined` value for any missing properties. |
 
 <a name="module_build-object-better--module.exports.bob"></a>
@@ -102,7 +141,7 @@ Build an object with specified properties, all of which have the same value.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| keys | <code>Iterable.&lt;\*&gt;</code> | An iterable (e.g., an Array) describing the keys (i.e. property names) that your object will be given. |
+| keys | <code>Iterable.&lt;string&gt;</code> | An iterable (e.g., an Array) describing the keys (i.e. property names) that your object will be given. |
 | value | <code><em>primitive</em></code> | A constant value that will be used as the value for all properties of your object. |
 
 <a name="module_build-object-better--module.exports.bob"></a>

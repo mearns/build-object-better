@@ -13,6 +13,20 @@ const sinonChai = require('sinon-chai')
 chai.use(sinonChai)
 
 describe('The build-object-better package', () => {
+  it('should throw an error when invoked with 4 args', () => {
+    expect(() => bob([1, 2, 3], () => {}, () => {}, null)).to.throw(Error, /incorrect number of arguments/i)
+  })
+
+  it('should throw an error when invoked with 0 args', () => {
+    expect(() => bob()).to.throw(Error, /incorrect number of arguments/i)
+  })
+
+  describe('With a constant value key supplier', () => {
+    it('should throw an error', () => {
+      expect(() => bob([1, 2, 3], 'key', 'value')).to.throw(TypeError, /invalid key supplier/i)
+    })
+  })
+
   describe('with a key-supplier object and a value-supplier function', () => {
     testCall('should use the object to select keys and suppliers for values of generated object',
       ['a', 'b', 'c', 'd'], // iterable
