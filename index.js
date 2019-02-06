@@ -95,18 +95,7 @@ function fromOneArg (entries) {
   }
 }
 
-/**
- * The module exports a single function that is used for building an object in various ways. Different signatures are available as described below.
- *
- * In general, there are two ways to use the function: with one argument, or with two. With one argument, that argument fully specifies the properties
- * to create in the object, either as a sequence of key/value pairs, or else as a source object which is cloned.
- *
- * With two arguments, the first argument is an iterable of property names ("keys"), and the second argument describes how to determine the
- * value for each property.
- *
- * @param {...*} args See descriptions of different options below.
- */
-module.exports = function buildObjectBetter (...args) {
+function buildObjectBetter (...args) {
   if (args.length === 1) {
     return fromOneArg(args[0])
   } else if (args.length === 2) {
@@ -115,4 +104,53 @@ module.exports = function buildObjectBetter (...args) {
     return fromThreeArgs(...args)
   }
   throw new Error('Incorrect number of arguments: expected 1, 2, or 3')
+}
+
+module.exports = buildObjectBetter
+
+function isThennable (x) {
+  return x && typeof x === 'object' && typeof x.then === 'function'
+}
+
+buildObjectBetter.async = function buildObjectBetterAsync (...args) {
+  let p = Promise.resolve([])
+  for (let arg of args) {
+    if (isThennable) {
+      p = p.then((prior) => {
+        return arg.then(resolvedArg => {
+          prior.push(resolvedArg)
+          return prior
+        })
+      })
+    } else {
+      p = p.then((prior) => {
+        prior.push(arg)
+        return prior
+      })
+    }
+  }
+
+  return p.then(resolvedArgs => {
+    if (resolvedArgs.length === 1) {
+      return fromOneArg(resolvedArgs[0])
+    } else if (resolvedArgs.length === 2) {
+      return fromTwoArgs(...resolvedArgs)
+    } else if (resolvedArgs.length === 3) {
+      return fromThreeArgs(...resolvedArgs)
+    }
+    throw new Error('Incorrect number of arguments: expected 1, 2, or 3')
+  })
+    // XXX: TODO: FIXME: This might work for asynchronous value suppliers, but haven't accounted for
+    // asynchronous key suppliers.
+    .then(obj => {
+      let p = Promise.resolve(obj)
+      for (let [k, v] of Object.entries(obj)) {
+        if (isThennable(v)) {
+          p = p.then(() => v).then(resolvedValue => {
+            obj[k] = resolvedValue
+            return obj
+          })
+        }
+      }
+    })
 }
