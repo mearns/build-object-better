@@ -6,6 +6,10 @@ matrix:
         os: linux
       - node_js: node
         os: osx
+      - node_js: 12
+        os: linux
+      - node_js: 12
+        os: osx
       - node_js: 11
         os: linux
       - node_js: 11
@@ -21,14 +25,6 @@ matrix:
       - node_js: 8
         os: linux
       - node_js: 8
-        os: osx
-      - node_js: 7
-        os: linux
-      - node_js: 7
-        os: osx
-      - node_js: 6
-        os: linux
-      - node_js: 6
         os: osx
 
 cache:
