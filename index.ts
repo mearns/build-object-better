@@ -24,28 +24,32 @@ type EntryObject<V> = {
 
 type ObjectOf<V> = { [key: string]: V | undefined };
 
+type Primitive = string | number | boolean | symbol | null | undefined;
+
 /**
  * Returns a new empty object.
  */
-function buildObject<E, V>(): ObjectOf<V>;
+export function buildObject<E, V>(): ObjectOf<V>;
 
 /**
  * Build an object as a shallow copy of the given object.
  * @param source The source object.
  */
-function buildObject<E, V>(source: ObjectOf<V>): ObjectOf<V>;
+export function buildObject<E, V>(source: ObjectOf<V>): ObjectOf<V>;
 
 /**
  * @param entries An iterable of Entries, each Entry describing the name of
  * a property and its value.
  */
-function buildObject<E, V>(entries: Iterable<Entry<V>>): ObjectOf<V>;
+export function buildObject<E, V>(entries: Iterable<Entry<V>>): ObjectOf<V>;
 
 /**
  * @param entries Build an object from an iterable of Entry objects, each describing one
  * key and one value to define on property of the object.
  */
-function buildObject<E, V>(entries: Iterable<EntryObject<V>>): ObjectOf<V>;
+export function buildObject<E, V>(
+  entries: Iterable<EntryObject<V>>
+): ObjectOf<V>;
 
 /**
  * The most generic form with control over the generated keys and values.
@@ -54,13 +58,13 @@ function buildObject<E, V>(entries: Iterable<EntryObject<V>>): ObjectOf<V>;
  * @param valueSupplier The thing that translates property names (from the `keySupplier`) (and optionally elements
  * from the source) into property values.
  */
-function buildObject<E, V>(
+export function buildObject<E, V>(
   source: Iterable<E>,
   keySupplier: KeySupplier<E>,
   valueSupplier: ValueSupplierFunction<E, V>
 ): ObjectOf<V>;
 
-function buildObject<V>(
+export function buildObject<V>(
   source: Iterable<string>,
   keySupplier: KeySupplierObject,
   valueSupplier: ValueSupplierFunction<string, V>
@@ -71,7 +75,7 @@ function buildObject<V>(
  * @param source The iterable of property names
  * @param valueSupplier The function to supply a value for each property.
  */
-function buildObject<V>(
+export function buildObject<V>(
   source: Iterable<string>,
   valueSupplier: ValueSupplierFunction<string, V>
 ): ObjectOf<V>;
@@ -81,7 +85,10 @@ function buildObject<V>(
  * @param source The iterable of property names
  * @param fixedValue
  */
-function buildObject<V>(source: Iterable<string>, fixedValue: V): ObjectOf<V>;
+export function buildObject<V>(
+  source: Iterable<string>,
+  fixedValue: V
+): ObjectOf<V>;
 
 /**
  * Build an object with the same properties as the given source object, but with values
@@ -89,7 +96,7 @@ function buildObject<V>(source: Iterable<string>, fixedValue: V): ObjectOf<V>;
  * @param source
  * @param valueSupplier
  */
-function buildObject<E, V>(
+export function buildObject<E, V>(
   source: ObjectOf<E>,
   valueSupplier: ValueSupplierFunction<string, V>
 ): ObjectOf<V>;
@@ -99,9 +106,12 @@ function buildObject<E, V>(
  * @param source The source of property names.
  * @param fixedValue
  */
-function buildObject<V>(source: ObjectOf<any>, fixedValue: V): ObjectOf<V>;
+export function buildObject<V>(
+  source: ObjectOf<any>,
+  fixedValue: V
+): ObjectOf<V>;
 
-function buildObject<E, V>(
+export default function buildObject<E, V>(
   ...args:
     | []
     | [ObjectOf<V> | Iterable<Entry<V> | EntryObject<V>>]
@@ -116,8 +126,8 @@ function buildObject<E, V>(
       ]
 ): ObjectOf<V> {
   switch (args.length) {
-    case 0:
-      return {};
+    // case 0:
+    //   return {};
     case 1:
       return fromOneArg(args[0]);
     case 2:
@@ -125,7 +135,7 @@ function buildObject<E, V>(
     case 3:
       return fromThreeArgs(args[0], args[1], args[2]);
     default:
-      throw new Error("Wrong number of arguments");
+      throw new Error("incorrect number of arguments");
   }
 }
 
@@ -148,7 +158,7 @@ function fromOneArg<V>(
 
 function fromTwoArgs<E, V>(
   source: E extends string ? Iterable<string> | ObjectOf<string> : ObjectOf<E>,
-  values: ValueSupplierFunction<E, V>
+  values: ValueSupplierFunction<E, V> | V[]
 ): ObjectOf<V> {
   if (isIterable(source)) {
     let idx = 0;
@@ -192,17 +202,28 @@ function buildIt<E, V>(
   source: Iterable<E>,
   kande: Array<[string, E, number]>,
   allKeys: Array<string>,
-  values: ValueSupplierFunction<E, V>
+  values:
+    | ValueSupplierFunction<E, V>
+    | V[]
+    | (Primitive extends V ? V : never)
+    | (E extends string ? ObjectOf<V> : never)
 ): ObjectOf<V> {
   const o: ObjectOf<V> = {};
   if (isValueSupplierFunction(values)) {
     for (const [k, e, i] of kande) {
       o[k] = values(k, i, allKeys, e, source);
     }
-  } else {
-    const value: V = values;
+  } else if (isValueArray(values)) {
     for (const [k, e, i] of kande) {
-      o[k] = value;
+      o[k] = values[i];
+    }
+  } else if (isObjectOf(values)) {
+    for (const [k, e, i] of kande) {
+      o[k] = values[k];
+    }
+  } else {
+    for (const [k, e, i] of kande) {
+      o[k] = values;
     }
   }
   return o;
@@ -311,8 +332,24 @@ function valuesFromConst<E, V>(
   return o;
 }
 
+function isObjectOf<V>(
+  o: (Primitive extends V ? V : never) | ObjectOf<V>
+): o is ObjectOf<V> {
+  return typeof o === "object";
+}
+
+function isValueArray<V>(
+  o: V[] | (Primitive extends V ? V : never) | ObjectOf<V>
+): o is V[] {
+  return Array.isArray(o);
+}
+
 function isValueSupplierFunction<E, V>(
-  o: ValueSupplierFunction<E, V> | string
+  o:
+    | ValueSupplierFunction<E, V>
+    | V[]
+    | (Primitive extends V ? V : never)
+    | (E extends string ? ObjectOf<V> : never)
 ): o is ValueSupplierFunction<E, V> {
   return typeof o === "function";
 }

@@ -2,7 +2,7 @@
   "name": "build-object-better",
   "version": "1.0.1",
   "description": "Utilities for building out an object from properties",
-  "main": "index.js",
+  "main": "dist/index.js",
   "keywords": [
     "object builder",
     "objects",
@@ -37,14 +37,17 @@
     "check:lint:package-json": "npmPkgJsonLint .",
     "check:lint": "npm-run-all --parallel check:lint:*",
     "check": "npm-run-all --parallel check:*",
-    "test-only": "mocha --recursive ./test",
-    "test": "nyc mocha --recursive ./test",
+    "test-only-ts": "mocha -r ts-node/register ./test/**/*.spec.ts",
+    "test-only": "mocha ./test/**/*.spec.js",
+    "test": "nyc npm run test-only",
     "verify": "npm-run-all check test",
     "compile": "tsc",
     "docs": "jsdoc --recurse --destination out/jsdocs --package package.json --configure jsdoc.conf.json index.js",
     "build": "npm-run-all clean verify compile"
   },
   "devDependencies": {
+    "@types/chai": "4.2.7",
+    "@types/mocha": "5.2.7",
     "chai": "4.2.0",
     "jsdoc": "3.6.3",
     "jsdoc-to-markdown": "5.0.1",
@@ -58,6 +61,7 @@
     "sinon-chai": "3.3.0",
     "snazzy": "7.1.1",
     "standard": "12.0.1",
+    "ts-node": "8.5.4",
     "webpack": "4.28.1"
   },
   "dependencies": {

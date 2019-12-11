@@ -1,9 +1,10 @@
 {
   "compilerOptions": {
     "outDir": "dist/",
-    "module": "system",
+    "module": "CommonJS",
     "sourceMap": true,
-    "target": "es2015"
+    "target": "es2015",
+    "moduleResolution": "node"
   },
   "include": ["index.ts"]
 }
