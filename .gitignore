@@ -4,3 +4,4 @@ coverage/
 logs/
 out/
 umd/
+dist/

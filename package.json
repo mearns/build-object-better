@@ -9,7 +9,8 @@
     "properties"
   ],
   "files": [
-    "index.js"
+    "dist/index.js",
+    "dist/index.js.map"
   ],
   "repository": {
     "type": "git",
@@ -39,7 +40,7 @@
     "test-only": "mocha --recursive ./test",
     "test": "nyc mocha --recursive ./test",
     "verify": "npm-run-all check test",
-    "compile": "echo \"Nothing to build for this project, runs from src.\"",
+    "compile": "tsc",
     "docs": "jsdoc --recurse --destination out/jsdocs --package package.json --configure jsdoc.conf.json index.js",
     "build": "npm-run-all clean verify compile"
   },
@@ -59,5 +60,7 @@
     "standard": "12.0.1",
     "webpack": "4.28.1"
   },
-  "dependencies": {}
+  "dependencies": {
+    "typescript": "3.7.3"
+  }
 }
