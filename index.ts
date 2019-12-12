@@ -7,15 +7,24 @@ function fromTwoArgs<E, V>(
 }
 
 function getKeysAndElements<E>(source: KeyAndValueSource<E>): [E[], string[]] {
-  if (isKeyIterable(source)) {
+  if (isIterable(source)) {
     const elements: E[] = [];
     for (const e of source) {
       elements.push(e);
     }
     const keys: string[] = new Array(elements.length);
     for (let i = 0; i < elements.length; i++) {
-      // XXX: Here.
-      keys[i] = (elements[i] as unknown) as string;
+      // this _should_ only happen if E extends string, but we can't really guarantee that the ObjectOf<V>
+      // option in the KeyAndValueSource doesn't also have an iterator, and since this type erasure is just
+      // as bad as Java's, we don't know what type it will return.
+      keys[i] = String(elements[i]);
+    }
+    return [elements, keys];
+  } else {
+    const keys: string[] = Object.keys(source);
+    const elements: E[] = new Array(keys.length);
+    for (let i = 0; i < keys.length; i++) {
+      elements[i] = source[keys[i]];
     }
     return [elements, keys];
   }
@@ -80,6 +89,11 @@ function getKeys<E>(elements: E[], keySupplier: KeySupplier<E>): string[] {
       keys[i] = k;
     }
   } else {
+    // If we made it this far, keySupplier is an Objectof<string>,
+    // which can only happen if E extends string, so we should be able
+    // to use E as a string to index into keySupplier. However... typescript
+    // can't deduce that far apparently. Maybe because it's also typed as possibly
+    // being a never, though we know that's can't actually happen.
     for (let i = 0; i < elements.length; i++) {
       const e = elements[i];
       const k = keySupplier[(e as unknown) as string];
@@ -133,9 +147,7 @@ function isPrimitive<V extends Primitive>(o: V | ObjectOf<any>): o is V {
   }
 }
 
-function isKeyIterable<E>(
-  o: ObjectOf<E> | Iterable<string>
-): o is Iterable<string> {
+function isIterable(o: any): o is Iterable<any> {
   return typeof o[Symbol.iterator] === "function";
 }
 
