@@ -1,6 +1,6 @@
 {
   "name": "build-object-better",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Utilities for building out an object from properties",
   "main": "index.js",
   "keywords": [
@@ -22,7 +22,7 @@
   },
   "homepage": "https://github.com/mearns/build-object-better/",
   "engines": {
-    "node": "^8.0.0 ^9.0.0 ^10.0.0"
+    "node": ">=8 <=12"
   },
   "scripts": {
     "clean": "rimraf coverage/ .nyc_output/ out/ dist/",
