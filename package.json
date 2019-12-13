@@ -36,7 +36,7 @@
     "check": "npm run check:js && npm run check:readme",
     "compile": "echo \"Nothing to build for this project, runs from src.\"",
     "docs": "jsdoc --recurse --destination out/jsdocs --package package.json --configure jsdoc.conf.json index.js",
-    "build": "npm-run-all clean verify compile"
+    "build": "npm run clean && npm run verify && npm run compile"
   },
   "devDependencies": {
     "chai": "4.2.0",
