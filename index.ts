@@ -1,18 +1,70 @@
+export default function buildObject<E, V>(
+  ...args:
+    | [KeyAndValueSource<V>]
+    | [KeyAndElementSource<E>, ValueSupplier<E, V>]
+    | [ElementSource<E>, KeySupplier<E>, ValueSupplier<E, V>]
+): ObjectOf<V> {
+  switch (args.length) {
+    case 1:
+      return fromOneArg(...args);
+    case 2:
+      return fromTwoArgs(...args);
+    case 3:
+      return fromThreeArgs(...args);
+  }
+  throw new Error("Incorrect number of arguments");
+}
+
+function fromOneArg<V>(source: KeyAndValueSource<V>): ObjectOf<V> {
+  if (isIterable(source)) {
+    const elements: (Entry<V> | EntryObject<V>)[] = [];
+    for (const e of source) {
+      elements.push(e);
+    }
+    if (elements.length === 0) {
+      return {};
+    }
+    const [first] = elements;
+    const o = {};
+    if (isEntry(first)) {
+      const entries: Entry<V>[] = elements as Entry<V>[];
+      for (let i = 0; i < elements.length; i++) {
+        const [key, value]: [string, V] = entries[i];
+        o[key] = value;
+      }
+    } else {
+      const entries: EntryObject<V>[] = elements as EntryObject<V>[];
+      for (let i = 0; i < elements.length; i++) {
+        const { key, value }: { key: string; value: V } = entries[i];
+        o[key] = value;
+      }
+    }
+    return o;
+  } else {
+    return { ...source };
+  }
+}
+
 function fromTwoArgs<E, V>(
-  source: KeyAndValueSource<E>,
+  source: KeyAndElementSource<E>,
   valueSupplier: ValueSupplier<E, V>
 ): ObjectOf<V> {
   const [elements, keys]: [E[], string[]] = getKeysAndElements(source);
   return getValues(elements, keys, valueSupplier);
 }
 
-function getKeysAndElements<E>(source: KeyAndValueSource<E>): [E[], string[]] {
+function getKeysAndElements<E>(
+  source: KeyAndElementSource<E>
+): [E[], string[]] {
   if (isIterable(source)) {
     const elements: E[] = [];
     for (const e of source) {
       elements.push(e);
     }
     const keys: string[] = new Array(elements.length);
+    if (elements.length === 0) {
+      return [[], keys];
+    }
     for (let i = 0; i < elements.length; i++) {
       // this _should_ only happen if E extends string, but we can't really guarantee that the ObjectOf<V>
       // option in the KeyAndValueSource doesn't also have an iterator, and since this type erasure is just
@@ -31,7 +83,7 @@ function getKeysAndElements<E>(source: KeyAndValueSource<E>): [E[], string[]] {
 }
 
 function fromThreeArgs<E, V>(
-  source: KeySource<E>,
+  source: ElementSource<E>,
   keySupplier: KeySupplier<E>,
   valueSupplier: ValueSupplier<E, V>
 ): ObjectOf<V> {
@@ -40,7 +92,7 @@ function fromThreeArgs<E, V>(
   return getValues(elements, keys, valueSupplier);
 }
 
-function getElements<E>(source: KeySource<E>): E[] {
+function getElements<E>(source: ElementSource<E>): E[] {
   return [...source];
 }
 
@@ -88,7 +140,7 @@ function getKeys<E>(elements: E[], keySupplier: KeySupplier<E>): string[] {
       const k = keySupplier[i];
       keys[i] = k;
     }
-  } else {
+  } else if (typeof keySupplier === "object") {
     // If we made it this far, keySupplier is an Objectof<string>,
     // which can only happen if E extends string, so we should be able
     // to use E as a string to index into keySupplier. However... typescript
@@ -99,6 +151,8 @@ function getKeys<E>(elements: E[], keySupplier: KeySupplier<E>): string[] {
       const k = keySupplier[(e as unknown) as string];
       keys[i] = k;
     }
+  } else {
+    throw new TypeError("Invalid key supplier");
   }
   return keys;
 }
@@ -151,6 +205,10 @@ function isIterable(o: any): o is Iterable<any> {
   return typeof o[Symbol.iterator] === "function";
 }
 
+function isEntry<V>(o: Entry<V> | EntryObject<V>): o is Entry<V> {
+  return Array.isArray(o);
+}
+
 /*
 
  /$$$$$$$$ /$$     /$$ /$$$$$$$  /$$$$$$$$  /$$$$$$
@@ -171,9 +229,13 @@ type Primitive = string | number | boolean | bigint | symbol | undefined | null;
  */
 type ObjectOf<V> = { [key: string]: V | undefined };
 
-type KeySource<E> = Iterable<E>;
+type ElementSource<E> = Iterable<E>;
 
-type KeyAndValueSource<E> =
+/**
+ * For two-argument variant, the first argument needs to supply both the key and
+ * the element, of type E.
+ */
+type KeyAndElementSource<E> =
   | ObjectOf<E>
   | (E extends string ? Iterable<E> : never);
 
@@ -197,3 +259,22 @@ type ValueSupplier<E, V> =
   | V[]
   | ObjectOf<V>
   | (V extends Primitive ? V : never);
+
+/**
+ * Represents a key-value pair as a tuple.
+ */
+type Entry<V> = [string, V];
+
+/**
+ * Represents a key-value pair as an object with one
+ * property for the key and one property for a value.
+ */
+type EntryObject<V> = {
+  key: string;
+  value: V;
+};
+
+type KeyAndValueSource<V> =
+  | ObjectOf<V>
+  | Iterable<Entry<V>>
+  | Iterable<EntryObject<V>>;

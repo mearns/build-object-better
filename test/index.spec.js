@@ -29,7 +29,7 @@ describe("The build-object-better package", () => {
     expect(() => bob()).to.throw(Error, /incorrect number of arguments/i);
   });
 
-  describe.skip("With a constant value key supplier", () => {
+  describe("With a constant value key supplier", () => {
     it("should throw an error", () => {
       // @ts-ignore
       expect(() => bob([1, 2, 3], "key", "value")).to.throw(
