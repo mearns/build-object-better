@@ -185,6 +185,7 @@ function isValueFunc<E, V>(o: ValueSupplier<E, V>): o is ValueFunc<E, V> {
   return typeof o === "function";
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function isPrimitive<V extends Primitive>(o: V | ObjectOf<any>): o is V {
   switch (typeof o) {
     case "string":
@@ -200,6 +201,7 @@ function isPrimitive<V extends Primitive>(o: V | ObjectOf<any>): o is V {
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function isIterable(o: any): o is Iterable<any> {
   return typeof o[Symbol.iterator] === "function";
 }

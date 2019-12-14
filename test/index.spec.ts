@@ -1,5 +1,6 @@
 /* eslint-env mocha */
 /* eslint no-unused-expressions: 0 */
+/* eslint @typescript-eslint/ban-ts-ignore: 0 */
 
 // Module under test
 import bob from "../index";
@@ -17,8 +18,12 @@ describe("The build-object-better package", () => {
       bob(
         // @ts-ignore
         [1, 2, 3],
-        () => {},
-        () => {},
+        () => {
+          /* empty */
+        },
+        () => {
+          /* empty */
+        },
         null
       )
     ).to.throw(Error, /incorrect number of arguments/i);
@@ -108,7 +113,7 @@ describe("The build-object-better package", () => {
     );
 
     it("should pass the supplied key value as the first argument to the value-supplier", () => {
-      const keySupplier = e => e.toUpperCase();
+      const keySupplier = (e: string): string => e.toUpperCase();
       const valueSupplier = sinon.stub().returnsArg(0);
       const iterable = ["a", "b", "c", "d"];
       bob(iterable, keySupplier, valueSupplier);
@@ -119,7 +124,7 @@ describe("The build-object-better package", () => {
     });
 
     it("should pass the index as the second argument to the value-supplier", () => {
-      const keySupplier = e => e.toUpperCase();
+      const keySupplier = (e: string): string => e.toUpperCase();
       const valueSupplier = sinon.stub().returnsArg(0);
       const iterable = ["a", "b", "c", "d"];
       bob(iterable, keySupplier, valueSupplier);
@@ -130,7 +135,7 @@ describe("The build-object-better package", () => {
     });
 
     it("should pass the entire key collection as the third argument to the value-supplier", () => {
-      const keySupplier = e => e.toUpperCase();
+      const keySupplier = (e: string): string => e.toUpperCase();
       const valueSupplier = sinon.stub().returnsArg(0);
       const iterable = ["a", "b", "c", "d"];
       const keys = iterable.map(keySupplier);
@@ -142,7 +147,7 @@ describe("The build-object-better package", () => {
     });
 
     it("should pass the iterable value as the fourth argument to the value-supplier", () => {
-      const keySupplier = e => e.toUpperCase();
+      const keySupplier = (e: string): string => e.toUpperCase();
       const valueSupplier = sinon.stub().returnsArg(0);
       const iterable = ["a", "b", "c", "d"];
       bob(iterable, keySupplier, valueSupplier);
@@ -158,7 +163,7 @@ describe("The build-object-better package", () => {
     });
 
     it("should pass the entire iterable as the fifth argument to the value-supplier", () => {
-      const keySupplier = e => e.toUpperCase();
+      const keySupplier = (e: string): string => e.toUpperCase();
       const valueSupplier = sinon.stub().returnsArg(0);
       const iterable = ["a", "b", "c", "d"];
       bob(iterable, keySupplier, valueSupplier);
@@ -176,7 +181,7 @@ describe("The build-object-better package", () => {
 
     it("should pass the iterable value as the first argument to the key-supplier", () => {
       const keySupplier = sinon.stub().returnsArg(0);
-      const valueSupplier = () => null;
+      const valueSupplier = (): null => null;
       const iterable = ["a", "b", "c", "d"];
       bob(iterable, keySupplier, valueSupplier);
 
@@ -187,7 +192,7 @@ describe("The build-object-better package", () => {
 
     it("should pass the iterable index as the second argument to the key-supplier", () => {
       const keySupplier = sinon.stub().returnsArg(0);
-      const valueSupplier = () => null;
+      const valueSupplier = (): null => null;
       const iterable = ["a", "b", "c", "d"];
       bob(iterable, keySupplier, valueSupplier);
 
@@ -198,7 +203,7 @@ describe("The build-object-better package", () => {
 
     it("should pass the iterable as the third argument to the key-supplier", () => {
       const keySupplier = sinon.stub().returnsArg(0);
-      const valueSupplier = () => null;
+      const valueSupplier = (): null => null;
       const iterable = ["a", "b", "c", "d"];
       bob(iterable, keySupplier, valueSupplier);
 
@@ -309,10 +314,10 @@ describe("The build-object-better package", () => {
         c: "c-3"
       }
     );
-    (function() {
+    (function(...args): void {
       testCall(
         "should support an arguments object of keys",
-        arguments,
+        args,
         (k, i) => `${k.toUpperCase()}-${i + 1}`,
         {
           a: "A-1",
@@ -330,11 +335,11 @@ describe("The build-object-better package", () => {
         [Symbol.iterator]: () => {
           let i = 0;
           return {
-            next: () => {
+            next: (): IteratorResult<number> => {
               if (i < 3) {
                 return { value: i++, done: false };
               }
-              return { done: true };
+              return { value: undefined, done: true };
             }
           };
         }
@@ -407,7 +412,7 @@ describe("The build-object-better package", () => {
   });
 });
 
-function testCall(should, ...args) {
+function testCall(should, ...args): void {
   const callArgs = args.slice(0, args.length - 1);
   const expected = args[args.length - 1];
   it(should, () => {
