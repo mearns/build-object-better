@@ -5,7 +5,8 @@
     "module": "CommonJS",
     "sourceMap": true,
     "target": "es2015",
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "declaration": true
   },
   "include": ["index.ts"]
 }
