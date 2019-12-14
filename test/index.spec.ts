@@ -2,15 +2,14 @@
 /* eslint no-unused-expressions: 0 */
 
 // Module under test
-const bob = require("../dist/index.js").default;
+import bob from "../index";
 
 // Support
-const chai = require("chai");
-const { expect } = chai;
-const sinon = require("sinon");
-const sinonChai = require("sinon-chai");
+import { expect, use } from "chai";
+import sinon from "sinon";
+import sinonChai from "sinon-chai";
 
-chai.use(sinonChai);
+use(sinonChai);
 
 describe("The build-object-better package", () => {
   it("should throw an error when invoked with 4 args", () => {
@@ -26,6 +25,7 @@ describe("The build-object-better package", () => {
   });
 
   it("should throw an error when invoked with 0 args", () => {
+    // @ts-ignore
     expect(() => bob()).to.throw(Error, /incorrect number of arguments/i);
   });
 

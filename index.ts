@@ -136,7 +136,6 @@ function getKeys<E>(elements: E[], keySupplier: KeySupplier<E>): string[] {
     }
   } else if (isKeyArray(keySupplier)) {
     for (let i = 0; i < elements.length; i++) {
-      const e = elements[i];
       const k = keySupplier[i];
       keys[i] = k;
     }
