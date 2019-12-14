@@ -29,14 +29,14 @@
     "pretty": "pretty-quick --staged",
     "pretty-all": "prettier --write ./index.ts ./test/**/*.js ./*.json ./*.yaml ./*.yml",
     "test": "nyc npm run test-only",
-    "test-only": "mocha -r ts-node/register ./test/**/*.spec.ts",
+    "test-only": "mocha -r ts-node/register ./test/**/*.spec.*",
     "verify": "npm run check && npm run test",
     "check:readme": "remark --no-stdout README.md",
-    "check:js": "eslint ./ test/ --ext .js --ext .ts --format codeframe",
-    "check": "npm run check:js && npm run check:readme",
+    "check:code": "eslint ./ test/ --ext .js --ext .ts --format codeframe",
+    "check": "npm run check:code && npm run check:readme",
     "compile": "tsc && echo 'module.exports = require(\"./index.js\").default;' > dist/build-object-better.js",
     "docs": "jsdoc --recurse --destination out/jsdocs --package package.json --configure jsdoc.conf.json index.js",
-    "build": "npm run clean && npm run verify && npm run compile"
+    "build": "npm run clean && npm run compile && npm run verify"
   },
   "nyc": {
     "instrument": true,
