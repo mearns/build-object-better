@@ -4,6 +4,7 @@
 
 // Module under test
 import bob from "../index";
+// import bob from "build-object-better";
 
 // Support
 import { expect, use } from "chai";

@@ -7,6 +7,7 @@
  */
 
 const bob = require("..");
+// const bob = require("build-object-better");
 
 const { expect } = require("chai");
 

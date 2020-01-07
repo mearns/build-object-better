@@ -1,6 +1,6 @@
 {
   "name": "build-object-better",
-  "version": "1.1.0-rc.2",
+  "version": "1.1.0",
   "description": "Utilities for building out an object from properties",
   "main": "dist/build-object-better.js",
   "types": "dist/index.d.ts",
@@ -36,7 +36,8 @@
     "check:code": "eslint ./ test/ --ext .js --ext .ts --format codeframe",
     "check": "npm run check:code && npm run check:readme",
     "compile": "tsc && echo 'module.exports = require(\"./index.js\").default;' > dist/build-object-better.js",
-    "build": "npm run clean && npm run compile && npm run verify"
+    "build": "npm run clean && npm run compile && npm run verify",
+    "prepublishOnly": "rimraf node_modules && npm install && npm audit && npm run build"
   },
   "nyc": {
     "instrument": true,
