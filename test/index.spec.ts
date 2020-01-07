@@ -44,6 +44,19 @@ describe("The build-object-better package", () => {
     });
   });
 
+  describe("with a source object and a value-supplier function", () => {
+    testCall(
+      "should use the keys and values of the source object",
+      { a: "X", b: "Y", c: "Z" }, // source
+      (k, i, keys, e, es) => [k, i, keys, e, es], // value-supplier
+      {
+        a: ["a", 0, ["a", "b", "c"], "X", ["X", "Y", "Z"]],
+        b: ["b", 1, ["a", "b", "c"], "Y", ["X", "Y", "Z"]],
+        c: ["c", 2, ["a", "b", "c"], "Z", ["X", "Y", "Z"]]
+      }
+    );
+  });
+
   describe("with a key-supplier object and a value-supplier function", () => {
     testCall(
       "should use the object to select keys and suppliers for values of generated object",
@@ -365,6 +378,19 @@ describe("The build-object-better package", () => {
         4: "my-value"
       }
     );
+  });
+
+  describe("with an empty iterable and a value supplier", () => {
+    testCall(
+      "should return an empty object",
+      [],
+      () => "any value in a void",
+      {}
+    );
+  });
+
+  describe("with a single argument which is an empty iterable", () => {
+    testCall("should return an empty object", [], {});
   });
 
   describe("with a single argument which is an iterable", () => {

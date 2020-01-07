@@ -57,6 +57,10 @@
     ],
     "require": [
       "ts-node/register"
+    ],
+    "reporter": [
+      "html",
+      "text"
     ]
   },
   "devDependencies": {
