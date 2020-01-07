@@ -35,7 +35,7 @@
     "check:readme": "remark --no-stdout README.md",
     "check:code": "eslint ./ test/ --ext .js --ext .ts --format codeframe",
     "check": "npm run check:code && npm run check:readme",
-    "compile": "tsc && echo 'module.exports = require(\"./index.js\").default;' > dist/build-object-better.js",
+    "compile": "tsc && cp index.d.ts dist/ && echo 'module.exports = require(\"./index.js\").default;' > dist/build-object-better.js",
     "build": "npm run clean && npm run compile && npm run verify",
     "prepublishOnly": "rimraf node_modules && npm install && npm audit && npm run build"
   },
