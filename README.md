@@ -4,15 +4,15 @@ A javascript package for building objects from their properties. Meant to be a r
 
 ```javascript
 const object = keys.reduce((o, k) => {
-  o[k] = figureOutValue(k)
-  return o
-}, {})
+  o[k] = figureOutValue(k);
+  return o;
+}, {});
 ```
 
 Instead:
 
 ```javascript
-const object = bob(keys, figureOutValue)
+const object = bob(keys, figureOutValue);
 ```
 
 ## Overview
@@ -42,23 +42,23 @@ If the single argument is a non-iterable `object`, then it is shallow copied.
 When invoked with 3 arguments, the second argument is called the _key supplier_ and is used to generate
 the keys, or property names, of the generated object.
 
-| Key Supplier | Type of arg `K` | Description | Defined for arg `K` over `iterable` |
-| ------ | ----- | ----- | ---- |
+| Key Supplier      | Type of arg `K`                                                      | Description                                                                                                                                            | Defined for arg `K` over `iterable`                   |
+| ----------------- | -------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------- |
 | supplier function | <code>function(elem:\*, idx:number, iterable:Iterable):string</code> | A function that is invoked for each element in the `iterable` (first argument) to generate a corresponding key/property-name for the generated object. | `keySupplier = (elem, idx) => K(elem, idx, iterable)` |
-| key list | <code>Array.&lt;string&gt;</code> | An array of keys/property-names corresponding to the ordered elements of `iterable`. | `keySupplier = (elem, idx) => K[idx]` |
-| key map | <code>Object</code> | An object whose properties map the elements of the `iterable` to keys/property-names of the generated object. | `keySupplier = (elem) => K[elem]` |
+| key list          | <code>Array.&lt;string&gt;</code>                                    | An array of keys/property-names corresponding to the ordered elements of `iterable`.                                                                   | `keySupplier = (elem, idx) => K[idx]`                 |
+| key map           | <code>Object</code>                                                  | An object whose properties map the elements of the `iterable` to keys/property-names of the generated object.                                          | `keySupplier = (elem) => K[elem]`                     |
 
 ### Value Suppliers
 
 When invoked with 2 or 3 arguments, the last argument is called the _value supplier_ and is used to generate
 the property values of the generated object.
 
-| ValueSupplier | Type of arg `V` | Description | Defined for arg `V` over `iterable`  |
-| ------ | ----- | ----- | ---- |
+| ValueSupplier     | Type of arg `V`                                                                                                 | Description                                                                                                                                                                            | Defined for arg `V` over `iterable`                                                                                                       |
+| ----------------- | --------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
 | supplier function | <code>function(key:string, idx: number, keys:Iterable.&lt;string&gt;, elem:\*, iterable:Iterable):string</code> | A function that is invoked for each element in the `iterable` (first argument), along with the corresponding key, to generate a corresponding property value for the generated object. | `valueSupplier = (elem, idx) => V(/* key */ keySupplier(elem, idx, iterable), idx, /* keys */ iterable.map(keySupplier), elem, iterable)` |
-| value list | <code>Array.&lt;\*&gt;</code> | An array of values corresponding to the ordered elements of `iterable`. | `valueSupplier = (elem, idx) => V[idx]` |
-| value source | <code>Object</code> | An object from which properties named by the keys will be copied. | `valueSupplier = (elem, idx) => V[keySupplier(elem, idx, iterable)]` |
-| constant value | <code>(string\|number\|boolean\|null\|undefined\|symbol)</code> | A fixed value that will be used as the value for all properties installed on the build object | `valueSupplier = () => V` |
+| value list        | <code>Array.&lt;\*&gt;</code>                                                                                   | An array of values corresponding to the ordered elements of `iterable`.                                                                                                                | `valueSupplier = (elem, idx) => V[idx]`                                                                                                   |
+| value source      | <code>Object</code>                                                                                             | An object from which properties named by the keys will be copied.                                                                                                                      | `valueSupplier = (elem, idx) => V[keySupplier(elem, idx, iterable)]`                                                                      |
+| constant value    | <code>(string\|number\|boolean\|null\|undefined\|symbol)</code>                                                 | A fixed value that will be used as the value for all properties installed on the build object                                                                                          | `valueSupplier = () => V`                                                                                                                 |
 
 ## API
 
@@ -78,8 +78,8 @@ See above for an explanation of the different options for the `valueSupplier`.
 
 Build an object from an iterable of entries, each giving the name and value of one property in the object (e.g., as returned by `Object.entries`).
 
-| Param | Type | Description |
-| --- | --- | --- |
+| Param   | Type                                               | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| ------- | -------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | entries | <code>Iterable&lt;(Array\|{key, value})&gt;</code> | An iterable of entries, each entry specifying both the name and value of a property for your object. Each entry can be an Array, or an object.<br />If an Array, then the first item (index 0) in the Array is the name of the property (the "key"), and the second item (index 1) is the property value.<br />If the entry is not an array, then it is assumed to be an Object with a "key" property specifying the property name, and a "value" property specifying its value. |
 
 ### `bob(source)`
@@ -88,7 +88,6 @@ Build an object as a shallow-clone of another object. The returned object will h
 source, with the same value. Values are not cloned, but copied directly, thus non-primitive objects (such as Arrays and Objects)
 will actually be references to the same in-memory value.
 
-| Param | Type | Description |
-| --- | --- | --- |
+| Param  | Type                | Description          |
+| ------ | ------------------- | -------------------- |
 | source | <code>Object</code> | The object to clone. |
-
