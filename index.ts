@@ -144,7 +144,7 @@ function getKeys<E>(elements: E[], keySupplier: KeySupplier<E>): string[] {
     // which can only happen if E extends string, so we should be able
     // to use E as a string to index into keySupplier. However... typescript
     // can't deduce that far apparently. Maybe because it's also typed as possibly
-    // being a never, though we know that's can't actually happen.
+    // being a never, though we know that can't actually happen.
     for (let i = 0; i < elements.length; i++) {
       const e = elements[i];
       const k = keySupplier[(e as unknown) as string];

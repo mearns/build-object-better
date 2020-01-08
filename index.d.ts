@@ -326,6 +326,274 @@ export function buildObject<E, V extends Primitive>(
 ): { [key: string]: V | undefined };
 
 /*
+   /$$$ /$$$$$$ /$$                                  /$$       /$$              /$$ /$$$$$$$$ /$$           /$$   /$$                     /$$$$$$$$                                              /$$$
+  /$$_/|_  $$_/| $$                                 | $$      | $$             /$$/| $$_____/|  $$         | $$  /$$/                    | $$_____/                                       /$$/$$|_  $$
+ /$$/    | $$ /$$$$$$    /$$$$$$   /$$$$$$  /$$$$$$ | $$$$$$$ | $$  /$$$$$$   /$$/ | $$       \  $$        | $$ /$$/   /$$$$$$  /$$   /$$| $$    /$$   /$$ /$$$$$$$   /$$$$$$$           |  $$$/  \  $$
+| $$     | $$|_  $$_/   /$$__  $$ /$$__  $$|____  $$| $$__  $$| $$ /$$__  $$ /$$/  | $$$$$     \  $$       | $$$$$/   /$$__  $$| $$  | $$| $$$$$| $$  | $$| $$__  $$ /$$_____/           /$$$$$$$  | $$
+| $$     | $$  | $$    | $$$$$$$$| $$  \__/ /$$$$$$$| $$  \ $$| $$| $$$$$$$$|  $$  | $$__/      /$$/       | $$  $$  | $$$$$$$$| $$  | $$| $$__/| $$  | $$| $$  \ $$| $$                |__ $$$_/  | $$
+|  $$    | $$  | $$ /$$| $$_____/| $$      /$$__  $$| $$  | $$| $$| $$_____/ \  $$ | $$        /$$/        | $$\  $$ | $$_____/| $$  | $$| $$   | $$  | $$| $$  | $$| $$                  /$$ $$   /$$/
+ \  $$$ /$$$$$$|  $$$$/|  $$$$$$$| $$     |  $$$$$$$| $$$$$$$/| $$|  $$$$$$$  \  $$| $$$$$$$$ /$$//$$      | $$ \  $$|  $$$$$$$|  $$$$$$$| $$   |  $$$$$$/| $$  | $$|  $$$$$$$ /$$       |__/__/ /$$$/
+  \___/|______/ \___/   \_______/|__/      \_______/|_______/ |__/ \_______/   \__/|________/|__/| $/      |__/  \__/ \_______/ \____  $$|__/    \______/ |__/  |__/ \_______/| $/              |___/
+                                                                                                 |_/                            /$$  | $$                                     |_/
+                                                                                                                               |  $$$$$$/
+                                                                                                                                \______/
+*/
+
+/**
+ * Create an object by iterating over a set of elements and defining one property for
+ * each. Property names ("keys") are determined for each element from the given `keyFunc`,
+ * and property values are determined from the given `valueFunc`.
+ *
+ * The `keyFunc` is invoked with each element and it's index within `elements`, plus
+ * a full list of all the elements, and the `valueFunc` is invoked with each key (property
+ * name) produced by the `keyFunc`, the index, the set of all produced keys, plus the
+ * corresponding elements and the set of all elements.
+ *
+ * @param elements The elements from which the properties are derived.
+ * @param keyFunc The function that caluclates property names from elements.
+ * @param valueFunc The function that calculates property values from keys and/or elements.
+ */
+export function buildObject<E, V>(
+  elements: Iterable<E>,
+  keyFunc: (element: E, idx?: number, elements?: Iterable<E>) => string,
+  valueFunc: (
+    key: string,
+    idx?: number,
+    keys?: Iterable<string>,
+    element?: E,
+    elements?: Iterable<E>
+  ) => V
+): { [key: string]: V | undefined };
+
+/**
+ * Create an object by iterating over a set of elements and defining one property for
+ * each. Property names ("keys") are determined for each element from the given `keyFunc`,
+ * and property values are taken from the corresponding index in the provided array.
+ *
+ * The `keyFunc` is invoked with each element and it's index within `elements`, plus
+ * a full list of all the elements.
+ *
+ * @param elements The elements from which the properties are derived.
+ * @param keyFunc The function that caluclates property names from elements.
+ * @param values The property values.
+ */
+export function buildObject<E, V>(
+  elements: Iterable<E>,
+  keyFunc: (element: E, idx?: number, elements?: Iterable<E>) => string,
+  values: V[]
+): { [key: string]: V | undefined };
+
+/**
+ * Create an object by iterating over a set of elements and defining one property for
+ * each. Property names ("keys") are determined for each element from the given `keyFunc`,
+ * and property values are taken from the corresponding properties of the given
+ * `valueSource` object (the property named by the produced key).
+ *
+ * The `keyFunc` is invoked with each element and it's index within `elements`, plus
+ * a full list of all the elements.
+ *
+ * @param elements The elements from which the properties are derived.
+ * @param keyFunc The function that caluclates property names from elements.
+ * @param valueSource The object that provides the property values.
+ */
+export function buildObject<E, V>(
+  elements: Iterable<E>,
+  keyFunc: (element: E, idx?: number, elements?: Iterable<E>) => string,
+  valueSource: { [key: string]: V | undefined }
+): { [key: string]: V | undefined };
+
+/**
+ * Create an object by iterating over a set of elements and defining one property for
+ * each, using the same `fixedValue` for each property. Property names ("keys") are
+ * determined for each element from the given `keyFunc`.
+ *
+ * The `keyFunc` is invoked with each element and it's index within `elements`, plus
+ * a full list of all the elements.
+ *
+ * @param elements The elements from which the properties are derived.
+ * @param keyFunc The function that caluclates property names from elements.
+ * @param fixedValue The value to use for all properties.
+ */
+export function buildObject<E, V extends Primitive>(
+  elements: Iterable<E>,
+  keyFunc: (element: E, idx?: number, elements?: Iterable<E>) => string,
+  fixedValue: V
+): { [key: string]: V | undefined };
+
+/*
+   /$$$ /$$$$$$ /$$                                  /$$       /$$              /$$ /$$$$$$$$ /$$                       /$$               /$$                     /$$$$ /$$$$                   /$$$
+  /$$_/|_  $$_/| $$                                 | $$      | $$             /$$/| $$_____/|  $$                     | $$              |__/                    | $$_/|_  $$            /$$/$$|_  $$
+ /$$/    | $$ /$$$$$$    /$$$$$$   /$$$$$$  /$$$$$$ | $$$$$$$ | $$  /$$$$$$   /$$/ | $$       \  $$          /$$$$$$$ /$$$$$$    /$$$$$$  /$$ /$$$$$$$   /$$$$$$ | $$    | $$           |  $$$/  \  $$
+| $$     | $$|_  $$_/   /$$__  $$ /$$__  $$|____  $$| $$__  $$| $$ /$$__  $$ /$$/  | $$$$$     \  $$        /$$_____/|_  $$_/   /$$__  $$| $$| $$__  $$ /$$__  $$| $$    | $$           /$$$$$$$  | $$
+| $$     | $$  | $$    | $$$$$$$$| $$  \__/ /$$$$$$$| $$  \ $$| $$| $$$$$$$$|  $$  | $$__/      /$$/       |  $$$$$$   | $$    | $$  \__/| $$| $$  \ $$| $$  \ $$| $$    | $$          |__ $$$_/  | $$
+|  $$    | $$  | $$ /$$| $$_____/| $$      /$$__  $$| $$  | $$| $$| $$_____/ \  $$ | $$        /$$/         \____  $$  | $$ /$$| $$      | $$| $$  | $$| $$  | $$| $$    | $$            /$$ $$   /$$/
+ \  $$$ /$$$$$$|  $$$$/|  $$$$$$$| $$     |  $$$$$$$| $$$$$$$/| $$|  $$$$$$$  \  $$| $$$$$$$$ /$$//$$       /$$$$$$$/  |  $$$$/| $$      | $$| $$  | $$|  $$$$$$$| $$$$ /$$$$ /$$       |__/__/ /$$$/
+  \___/|______/ \___/   \_______/|__/      \_______/|_______/ |__/ \_______/   \__/|________/|__/| $/      |_______/    \___/  |__/      |__/|__/  |__/ \____  $$|____/|____/| $/              |___/
+                                                                                                 |_/                                                    /$$  \ $$            |_/
+                                                                                                                                                       |  $$$$$$/
+                                                                                                                                                        \______/
+*/
+
+/**
+ * Create an object by iterating over a set of elements and defining one property for
+ * each. Property names ("keys") are taken from the corresponding index of the provided
+ * `keys` array, and property values are determined from the given `valueFunc`.
+ *
+ * The `valueFunc` is invoked with each key (property
+ * name) produced by the `keyFunc`, the index, the set of all produced keys, plus the
+ * corresponding elements and the set of all elements.
+ *
+ * @param elements The elements from which the properties are derived.
+ * @param keys The array of keys.
+ * @param valueFunc The function that calculates property values from keys and/or elements.
+ */
+export function buildObject<E, V>(
+  elements: Iterable<E>,
+  keys: string[],
+  valueFunc: (
+    key: string,
+    idx?: number,
+    keys?: Iterable<string>,
+    element?: E,
+    elements?: Iterable<E>
+  ) => V
+): { [key: string]: V | undefined };
+
+/**
+ * Create an object by iterating over a set of elements and defining one property for
+ * each. Property names ("keys") are taken from the corresponding index of the provided
+ * `keys` array, and property values are taken from the corresponding index in the
+ * provided `values` array.
+ *
+ * @param elements The elements from which the properties are derived.
+ * @param keys The array of keys.
+ * @param values The property values.
+ */
+export function buildObject<E, V>(
+  elements: Iterable<E>,
+  keys: string[],
+  values: V[]
+): { [key: string]: V | undefined };
+
+/**
+ * Create an object by iterating over a set of elements and defining one property for
+ * each. Property names ("keys") are taken from the corresponding index of the provided
+ * `keys` array, and property values are taken from the corresponding properties of the given
+ * `valueSource` object (the property named by the key).
+ *
+ * @param elements The elements from which the properties are derived.
+ * @param keys The array of keys.
+ * @param valueSource The object that provides the property values.
+ */
+export function buildObject<E, V>(
+  elements: Iterable<E>,
+  keys: string[],
+  valueSource: { [key: string]: V | undefined }
+): { [key: string]: V | undefined };
+
+/**
+ * Create an object by iterating over a set of elements and defining one property for
+ * each, using the same `fixedValue` for each property. Property names ("keys") are taken
+ * from the corresponding index of the provided `keys` array.
+ *
+ * @param elements The elements from which the properties are derived.
+ * @param keys The array of keys.
+ * @param fixedValue The value to use for all properties.
+ */
+export function buildObject<E, V extends Primitive>(
+  elements: Iterable<E>,
+  keys: string[],
+  fixedValue: V
+): { [key: string]: V | undefined };
+
+/*
+   /$$$ /$$$$$$ /$$                                  /$$       /$$              /$$             /$$               /$$                     /$$            /$$$$$$  /$$                                 /$$      /$$$$$$   /$$$$$$   /$$             /$$               /$$                     /$$                   /$$$
+  /$$_/|_  $$_/| $$                                 | $$      | $$             /$$/            | $$              |__/                    |  $$          /$$__  $$| $$                                | $$     /$$__  $$ /$$__  $$ /$$/            | $$              |__/                    |  $$           /$$/$$|_  $$
+ /$$/    | $$ /$$$$$$    /$$$$$$   /$$$$$$  /$$$$$$ | $$$$$$$ | $$  /$$$$$$   /$$/   /$$$$$$$ /$$$$$$    /$$$$$$  /$$ /$$$$$$$   /$$$$$$  \  $$        | $$  \ $$| $$$$$$$  /$$  /$$$$$$   /$$$$$$$ /$$$$$$  | $$  \ $$| $$  \__//$$/   /$$$$$$$ /$$$$$$    /$$$$$$  /$$ /$$$$$$$   /$$$$$$  \  $$         |  $$$/  \  $$
+| $$     | $$|_  $$_/   /$$__  $$ /$$__  $$|____  $$| $$__  $$| $$ /$$__  $$ /$$/   /$$_____/|_  $$_/   /$$__  $$| $$| $$__  $$ /$$__  $$  \  $$       | $$  | $$| $$__  $$|__/ /$$__  $$ /$$_____/|_  $$_/  | $$  | $$| $$$$   /$$/   /$$_____/|_  $$_/   /$$__  $$| $$| $$__  $$ /$$__  $$  \  $$        /$$$$$$$  | $$
+| $$     | $$  | $$    | $$$$$$$$| $$  \__/ /$$$$$$$| $$  \ $$| $$| $$$$$$$$|  $$  |  $$$$$$   | $$    | $$  \__/| $$| $$  \ $$| $$  \ $$   /$$/       | $$  | $$| $$  \ $$ /$$| $$$$$$$$| $$        | $$    | $$  | $$| $$_/  |  $$  |  $$$$$$   | $$    | $$  \__/| $$| $$  \ $$| $$  \ $$   /$$/       |__ $$$_/  | $$
+|  $$    | $$  | $$ /$$| $$_____/| $$      /$$__  $$| $$  | $$| $$| $$_____/ \  $$  \____  $$  | $$ /$$| $$      | $$| $$  | $$| $$  | $$  /$$/        | $$  | $$| $$  | $$| $$| $$_____/| $$        | $$ /$$| $$  | $$| $$     \  $$  \____  $$  | $$ /$$| $$      | $$| $$  | $$| $$  | $$  /$$/          /$$ $$   /$$/
+ \  $$$ /$$$$$$|  $$$$/|  $$$$$$$| $$     |  $$$$$$$| $$$$$$$/| $$|  $$$$$$$  \  $$ /$$$$$$$/  |  $$$$/| $$      | $$| $$  | $$|  $$$$$$$ /$$//$$      |  $$$$$$/| $$$$$$$/| $$|  $$$$$$$|  $$$$$$$  |  $$$$/|  $$$$$$/| $$      \  $$ /$$$$$$$/  |  $$$$/| $$      | $$| $$  | $$|  $$$$$$$ /$$//$$       |__/__/ /$$$/
+  \___/|______/ \___/   \_______/|__/      \_______/|_______/ |__/ \_______/   \__/|_______/    \___/  |__/      |__/|__/  |__/ \____  $$|__/| $/       \______/ |_______/ | $$ \_______/ \_______/   \___/   \______/ |__/       \__/|_______/    \___/  |__/      |__/|__/  |__/ \____  $$|__/| $/              |___/
+                                                                                                                                /$$  \ $$    |_/                      /$$  | $$                                                                                                    /$$  \ $$    |_/
+                                                                                                                               |  $$$$$$/                            |  $$$$$$/                                                                                                   |  $$$$$$/
+                                                                                                                                \______/                              \______/                                                                                                     \______/
+*/
+
+/**
+ * Create an object by iterating over a set of elements and defining one property for
+ * each. Property names ("keys") are taken from the corresponding property of the provided
+ * `keySource` object, and property values are determined from the given `valueFunc`.
+ *
+ * The `valueFunc` is invoked with each key (property
+ * name) produced by the `keyFunc`, the index, the set of all produced keys, plus the
+ * corresponding elements and the set of all elements.
+ *
+ * @param elements The elements from which the properties are derived.
+ * @param keysSource An object with properties named by `elements`, whose values become the keys.
+ * @param valueFunc The function that calculates property values from keys and/or elements.
+ */
+export function buildObject<E extends string, V>(
+  elements: Iterable<E>,
+  keySource: { [key: string]: string | undefined },
+  valueFunc: (
+    key: string,
+    idx?: number,
+    keys?: Iterable<string>,
+    element?: E,
+    elements?: Iterable<E>
+  ) => V
+): { [key: string]: V | undefined };
+
+/**
+ * Create an object by iterating over a set of elements and defining one property for
+ * each. Property names ("keys") are taken from the corresponding property of the provided
+ * `keySource` object, and property values are taken from the corresponding index in the
+ * provided `values` array.
+ *
+ * @param elements The elements from which the properties are derived.
+ * @param keysSource An object with properties named by `elements`, whose values become the keys.
+ * @param values The property values.
+ */
+export function buildObject<E, V>(
+  elements: Iterable<E>,
+  keySource: { [key: string]: string | undefined },
+  values: V[]
+): { [key: string]: V | undefined };
+
+/**
+ * Create an object by iterating over a set of elements and defining one property for
+ * each. Property names ("keys") are taken from the corresponding property of the provided
+ * `keySource` object, and property values are taken from the corresponding properties of the given
+ * `valueSource` object (the property named by the key).
+ *
+ * @param elements The elements from which the properties are derived.
+ * @param keysSource An object with properties named by `elements`, whose values become the keys.
+ * @param valueSource The object that provides the property values.
+ */
+export function buildObject<E, V>(
+  elements: Iterable<E>,
+  keySource: { [key: string]: string | undefined },
+  valueSource: { [key: string]: V | undefined }
+): { [key: string]: V | undefined };
+
+/**
+ * Create an object by iterating over a set of elements and defining one property for
+ * each, using the same `fixedValue` for each property. Property names ("keys") are taken
+ * from the corresponding property of the provided `keySource` object, and property values
+ * are taken from the corresponding properties of the given
+ *
+ * @param elements The elements from which the properties are derived.
+ * @param keysSource An object with properties named by `elements`, whose values become the keys.
+ * @param fixedValue The value to use for all properties.
+ */
+export function buildObject<E, V extends Primitive>(
+  elements: Iterable<E>,
+  keySource: { [key: string]: string | undefined },
+  fixedValue: V
+): { [key: string]: V | undefined };
+
+/*
  /$$$$$$$$ /$$     /$$ /$$$$$$$  /$$$$$$$$  /$$$$$$
 |__  $$__/|  $$   /$$/| $$__  $$| $$_____/ /$$__  $$
    | $$    \  $$ /$$/ | $$  \ $$| $$      | $$  \__/
