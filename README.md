@@ -12,12 +12,12 @@ const object = keys.reduce((o, k) => {
 Instead:
 
 ```javascript
-const object = bob(keys, figureOutValue);
+const object = buildObject(keys, figureOutValue);
 ```
 
 ## Overview
 
-The general form of the call is `bob(iterable, [[keySupplier], valueSupplier])`; in order to generate
+The general form of the call is `buildObject(iterable, [[keySupplier], valueSupplier])`; in order to generate
 the keys and values of the generated object, the iterable is iterated over and for each element, the `keySupplier`
 and `valueSupplier` are invoked to generate the respective components of one key/value pair which will be
 added as a property on the generated object.
@@ -62,19 +62,19 @@ the property values of the generated object.
 
 ## API
 
-### `bob(iterable, keySupplier, valueSupplier)`
+### `buildObject(iterable, keySupplier, valueSupplier)`
 
 Build an object from an iterable, with suppliers to generate the keys and values of the object's properties.
 
 See above for an explanation of the different options for the `keySupplier` and `valueSupplier`.
 
-### `bob(keys, valueSupplier)`
+### `buildObject(keys, valueSupplier)`
 
 Build an object from an iterable of keys/property-names and a function to generate corresponding property values for each one.
 
 See above for an explanation of the different options for the `valueSupplier`.
 
-### `bob(entries)`
+### `buildObject(entries)`
 
 Build an object from an iterable of entries, each giving the name and value of one property in the object (e.g., as returned by `Object.entries`).
 
@@ -82,7 +82,7 @@ Build an object from an iterable of entries, each giving the name and value of o
 | ------- | -------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | entries | <code>Iterable&lt;(Array\|{key, value})&gt;</code> | An iterable of entries, each entry specifying both the name and value of a property for your object. Each entry can be an Array, or an object.<br />If an Array, then the first item (index 0) in the Array is the name of the property (the "key"), and the second item (index 1) is the property value.<br />If the entry is not an array, then it is assumed to be an Object with a "key" property specifying the property name, and a "value" property specifying its value. |
 
-### `bob(source)`
+### `buildObject(source)`
 
 Build an object as a shallow-clone of another object. The returned object will have all the same _own_ properties as the provided
 source, with the same value. Values are not cloned, but copied directly, thus non-primitive objects (such as Arrays and Objects)

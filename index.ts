@@ -1,3 +1,5 @@
+/// <reference path = "index.d.ts" />
+
 export default function buildObject<E, V>(
   ...args:
     | [KeyAndValueSource<V>]
@@ -279,3 +281,5 @@ type KeyAndValueSource<V> =
   | ObjectOf<V>
   | Iterable<Entry<V>>
   | Iterable<EntryObject<V>>;
+
+/* eslint-disable import/export */

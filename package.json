@@ -37,7 +37,8 @@
     "check": "npm run check:code && npm run check:readme",
     "compile": "tsc && cp index.d.ts dist/ && echo 'module.exports = require(\"./index.js\").default;' > dist/build-object-better.js",
     "build": "npm run clean && npm run compile && npm run verify",
-    "prepublishOnly": "rimraf node_modules && npm install && npm audit && npm run build"
+    "docs": "typedoc --out out/docs --mode file --exclude \"+(node_modules|dist|out)/**/*\" --includeDeclarations",
+    "prepublishOnly": "rimraf node_modules && npm install && npm audit && npm run build && npm run docs"
   },
   "nyc": {
     "instrument": true,
@@ -87,6 +88,7 @@
     "sinon": "7.2.3",
     "sinon-chai": "3.3.0",
     "ts-node": "8.5.4",
+    "typedoc": "0.15.6",
     "typescript": "3.7.3"
   },
   "dependencies": {}
