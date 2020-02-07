@@ -2,6 +2,7 @@ language: node_js
 
 # node_js: ["stable", "13", "12", "10", "8"]
 node_js: ["stable"]
+os: linux
 
 cache: npm
 
@@ -28,12 +29,12 @@ jobs:
           branch: master
     - stage: deploy
       name: publish npm 📦
+      install: npm ci
       script: skip
       deploy:
         edge: true # opt in to dpl v2
         provider: npm
         api_token: $NPM_AUTH_TOKEN
-        dry_run: true
         cleanup: false
         on:
           branch: master
@@ -45,7 +46,7 @@ jobs:
         - git push --tags
       deploy:
         provider: releases
-        api_key: $GITHUB_TOKEN
+        token: $GITHUB_TOKEN
         file: "build-object-better-*.tgz"
         file_glob: true
         cleanup: false
