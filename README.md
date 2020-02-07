@@ -17,7 +17,7 @@ const object = buildObject(keys, figureOutValue);
 
 - [Detailed API docs](https://mearns.github.io/build-object-better/globals.html#buildobject)
 - [Find the code on github](https://github.com/mearns/build-object-better/)
-- [Find the package on npm](https://github.com/mearns/build-object-better/https://www.npmjs.com/package/build-object-better)
+- [Find the package on npm](https://www.npmjs.com/package/build-object-better)
 
 ## Overview
 
