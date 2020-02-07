@@ -17,7 +17,7 @@ const object = buildObject(keys, figureOutValue);
 
 - [Detailed API docs](https://mearns.github.io/build-object-better/globals.html#buildobject)
 - [Find the code on github](https://github.com/mearns/build-object-better/)
-- [Find the package on npm](https://www.npmjs.com/package/build-object-better)
+- [Find the package on npm](https://github.com/mearns/build-object-better/https://www.npmjs.com/package/build-object-better)
 
 ## Overview
 
@@ -65,6 +65,8 @@ the property values of the generated object.
 | constant value    | <code>(string\|number\|boolean\|null\|undefined\|symbol)</code>                                                 | A fixed value that will be used as the value for all properties installed on the build object                                                                                          | `valueSupplier = () => V`                                                                                                                 |
 
 ## API
+
+_For more details on the API, see the [detailed API docs](https://mearns.github.io/build-object-better/globals.html#buildobject)_
 
 ### `buildObject(iterable, keySupplier, valueSupplier)`
 
