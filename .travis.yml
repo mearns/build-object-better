@@ -15,7 +15,7 @@ jobs:
       name: audit 🕴️
       node_js: "stable"
       script: npm audit
-    # - stage: deploy
+    # - stage: deploy 🚀
     #   name: publish github pages 📜
     #   script: npm run docs
     #   deploy:
@@ -27,7 +27,7 @@ jobs:
     #     verbose: true
     #     on:
     #       branch: master
-    # - stage: deploy
+    # - stage: deploy 🚀
     #   name: publish npm 📦
     #   install: npm ci
     #   script: skip
@@ -38,11 +38,12 @@ jobs:
     #     cleanup: false
     #     on:
     #       branch: master
-    - stage: tag
+    - stage: tag 🏷️
       name: publish git release
       script:
         - npm pack
         - npm version
+        - git tags
         # - git push --tags
       deploy:
         provider: releases
