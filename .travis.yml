@@ -9,6 +9,9 @@ script:
 
 jobs:
   include:
+    - name: audit 🕴️
+      node_js: "stable"
+      script: npm audit
     - stage: publish docs 📜
       script: npm run docs
       deploy:
