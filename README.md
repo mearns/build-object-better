@@ -1,5 +1,7 @@
 # build-object-better
 
+Documentation: [build-object-better](https://mearns.github.io/build-object-better/)
+
 A javascript package for building objects from their properties. Meant to be a replacement for all of your:
 
 ```javascript
