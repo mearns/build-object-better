@@ -43,7 +43,7 @@ jobs:
       before_deploy:
         - npm pack
         - npm version
-        - git tags
+        - git tag
         # - git push --tags
       deploy:
         provider: releases
