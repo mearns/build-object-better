@@ -620,8 +620,13 @@ export default function buildObject<E, V extends Primitive>(
    | $$       | $$    | $$      | $$       /$$  \ $$
    | $$       | $$    | $$      | $$$$$$$$|  $$$$$$/
    |__/       |__/    |__/      |________/ \______/
- */
+*/
 
+/**
+ * A pragmatic definition of a primitive type, which is to say, something
+ * we can differentiate from the other ValueSuppliers: arrays, functions,
+ * and objects.
+ */
 export type Primitive =
   | string
   | number
