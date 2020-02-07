@@ -19,7 +19,7 @@ jobs:
       script: npm run docs
       deploy:
         edge: true # opt in to dpl v2
-        provider: pages:git
+        provider: pages
         token: $GITHUB_TOKEN
         local_dir: out/docs
         cleanup: false
@@ -48,6 +48,6 @@ jobs:
         api_key: $GITHUB_TOKEN
         file: "build-object-better-*.tgz"
         file_glob: true
-        skip_cleanup: true
+        cleanup: false
         on:
           branch: master
