@@ -37,7 +37,7 @@
     "check": "npm run check:code && npm run check:readme",
     "compile": "tsc && cp index.d.ts dist/ && echo 'module.exports = require(\"./index.js\").default;' > dist/build-object-better.js",
     "build": "npm run clean && npm run compile && npm run verify",
-    "docs": "typedoc --out out/docs --mode file --exclude \"+(node_modules|dist|out)/**/*\" --includeDeclarations index.d.ts",
+    "docs": "typedoc --out out/docs --mode file --includeVersion --exclude \"+(node_modules|dist|out)/**/*\" --includeDeclarations index.d.ts",
     "prepublishOnly": "rimraf node_modules && npm install && npm audit && npm run build && npm run docs"
   },
   "nyc": {
