@@ -29,29 +29,29 @@ jobs:
         verbose: true
         on:
           branch: master
-    # - stage: deploy 🚀
-    #   name: publish npm 📦
-    #   install: npm ci
-    #   script: skip
-    #   deploy:
-    #     edge: true # opt in to dpl v2
-    #     provider: npm
-    #     api_token: $NPM_AUTH_TOKEN
-    #     cleanup: false
-    #     on:
-    #       branch: master
-    # - stage: tag 🏷️
-    #   name: publish git release
-    #   before_deploy:
-    #     - npm pack
-    #     - npm version
-    #     - git tag
-    #     - git push --tags
-    #   deploy:
-    #     provider: releases
-    #     token: $GITHUB_TOKEN
-    #     file: "build-object-better-*.tgz"
-    #     file_glob: true
-    #     cleanup: false
-    #     on:
-    #       branch: master
+    - stage: deploy 🚀
+      name: publish npm 📦
+      install: npm ci
+      script: skip
+      deploy:
+        edge: true # opt in to dpl v2
+        provider: npm
+        api_token: $NPM_AUTH_TOKEN
+        cleanup: false
+        on:
+          branch: master
+    - stage: tag 🏷️
+      name: publish git release
+      before_deploy:
+        - npm pack
+        - npm version
+        - git tag
+        # - git push --tags
+      deploy:
+        provider: releases
+        token: $GITHUB_TOKEN
+        file: "build-object-better-*.tgz"
+        file_glob: true
+        cleanup: false
+        on:
+          branch: master

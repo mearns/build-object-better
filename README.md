@@ -1,6 +1,6 @@
 # build-object-better
 
-Documentation: https://mearns.github.io/build-object-better/
+Detailed API docs: [https://mearns.github.io/build-object-better/](https://mearns.github.io/build-object-better/globals.html#buildobject)
 
 A javascript package for building objects from their properties. Meant to be a replacement for all of your:
 
