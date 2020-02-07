@@ -1,13 +1,5 @@
 export default buildObject;
 
-/**
- * Create a new object as a shallow clone of the given object.
- * @param source The object to clone.
- */
-function buildObject<V>(source: {
-  [key: string]: V | undefined;
-}): { [key: string]: V | undefined };
-
 function buildObject<E, V>(
   ...args:
     | [KeyAndValueSource<V>]

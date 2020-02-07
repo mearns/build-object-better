@@ -15,7 +15,7 @@
  * Create a new object as a shallow clone of the given object.
  * @param source The object to clone.
  */
-export declare function buildObject<V>(source: {
+export default function buildObject<V>(source: {
   [key: string]: V | undefined;
 }): { [key: string]: V | undefined };
 
@@ -24,7 +24,7 @@ export declare function buildObject<V>(source: {
  * pair defining one property in the created object.
  * @param entries The list of key-value pairs.
  */
-export declare function buildObject<V>(
+export default function buildObject<V>(
   entries: Iterable<[string, V]>
 ): { [key: string]: V | undefined };
 
@@ -33,7 +33,7 @@ export declare function buildObject<V>(
  * pair defining one property in the created object.
  * @param entries The list of key-value pairs.
  */
-export declare function buildObject<V>(
+export default function buildObject<V>(
   entryObjects: Iterable<{ key: string; value: V }>
 ): { [key: string]: V | undefined };
 
@@ -78,7 +78,7 @@ export declare function buildObject<V>(
  * @param valueFunc A function that generates property values for the output
  * object.
  */
-export declare function buildObject<E, V>(
+export default function buildObject<E, V>(
   source: {
     [key: string]: E | undefined;
   },
@@ -113,7 +113,7 @@ export declare function buildObject<E, V>(
  * @param source The source object.
  * @param values The array of property values.
  */
-export declare function buildObject<E, V>(
+export default function buildObject<E, V>(
   source: {
     [key: string]: E | undefined;
   },
@@ -138,7 +138,7 @@ export declare function buildObject<E, V>(
  * @param source The source object.
  * @param valueSource The object from which property values are taken.
  */
-export declare function buildObject<E, V>(
+export default function buildObject<E, V>(
   source: {
     [key: string]: E | undefined;
   },
@@ -166,7 +166,7 @@ export declare function buildObject<E, V>(
  * @param source The source object.
  * @param fixedVal The value to use for every property.
  */
-export declare function buildObject<E, V extends Primitive>(
+export default function buildObject<E, V extends Primitive>(
   source: {
     [key: string]: E | undefined;
   },
@@ -212,7 +212,7 @@ export declare function buildObject<E, V extends Primitive>(
  * @param valueFunc A function that generates property values for the output
  * object.
  */
-export declare function buildObject<E extends string, V>(
+export default function buildObject<E extends string, V>(
   keys: Iterable<E>,
   valueFunc: (
     key: string,
@@ -249,7 +249,7 @@ export declare function buildObject<E extends string, V>(
  * @param valueFunc A function that generates property values for the output
  * object.
  */
-export declare function buildObject<E extends string, V>(
+export default function buildObject<E extends string, V>(
   keys: Iterable<E>,
   valueFunc: (
     key: string,
@@ -277,7 +277,7 @@ export declare function buildObject<E extends string, V>(
  * @param keys The keys (property names).
  * @param values The array of property values.
  */
-export declare function buildObject<E extends string, V>(
+export default function buildObject<E extends string, V>(
   keys: Iterable<E>,
   values: V[]
 ): { [key: string]: V | undefined };
@@ -297,7 +297,7 @@ export declare function buildObject<E extends string, V>(
  * @param keys The keys (property names).
  * @param valueSource The object from which property values are taken.
  */
-export declare function buildObject<E, V>(
+export default function buildObject<E, V>(
   keys: Iterable<E>,
   valueSource: {
     [key: string]: V | undefined;
@@ -320,7 +320,7 @@ export declare function buildObject<E, V>(
  * @param keys The keys (property names).
  * @param fixedVal The value to use for every property.
  */
-export declare function buildObject<E, V extends Primitive>(
+export default function buildObject<E, V extends Primitive>(
   keys: Iterable<E>,
   fixedVal: V
 ): { [key: string]: V | undefined };
@@ -362,7 +362,7 @@ export declare function buildObject<E, V extends Primitive>(
  * @param keyFunc The function that caluclates property names from elements.
  * @param valueFunc The function that calculates property values from keys and/or elements.
  */
-export declare function buildObject<E, V>(
+export default function buildObject<E, V>(
   elements: Iterable<E>,
   keyFunc: (element: E, idx?: number, elements?: Iterable<E>) => string,
   valueFunc: (
@@ -395,7 +395,7 @@ export declare function buildObject<E, V>(
  * @param keyFunc The function that caluclates property names from elements.
  * @param values The property values.
  */
-export declare function buildObject<E, V>(
+export default function buildObject<E, V>(
   elements: Iterable<E>,
   keyFunc: (element: E, idx?: number, elements?: Iterable<E>) => string,
   values: V[]
@@ -414,7 +414,7 @@ export declare function buildObject<E, V>(
  * @param keyFunc The function that caluclates property names from elements.
  * @param valueSource The object that provides the property values.
  */
-export declare function buildObject<E, V>(
+export default function buildObject<E, V>(
   elements: Iterable<E>,
   keyFunc: (element: E, idx?: number, elements?: Iterable<E>) => string,
   valueSource: { [key: string]: V | undefined }
@@ -432,7 +432,7 @@ export declare function buildObject<E, V>(
  * @param keyFunc The function that caluclates property names from elements.
  * @param fixedValue The value to use for all properties.
  */
-export declare function buildObject<E, V extends Primitive>(
+export default function buildObject<E, V extends Primitive>(
   elements: Iterable<E>,
   keyFunc: (element: E, idx?: number, elements?: Iterable<E>) => string,
   fixedValue: V
@@ -465,7 +465,7 @@ export declare function buildObject<E, V extends Primitive>(
  * @param keys The array of keys.
  * @param valueFunc The function that calculates property values from keys and/or elements.
  */
-export declare function buildObject<E, V>(
+export default function buildObject<E, V>(
   elements: Iterable<E>,
   keys: string[],
   valueFunc: (
@@ -487,7 +487,7 @@ export declare function buildObject<E, V>(
  * @param keys The array of keys.
  * @param values The property values.
  */
-export declare function buildObject<E, V>(
+export default function buildObject<E, V>(
   elements: Iterable<E>,
   keys: string[],
   values: V[]
@@ -503,7 +503,7 @@ export declare function buildObject<E, V>(
  * @param keys The array of keys.
  * @param valueSource The object that provides the property values.
  */
-export declare function buildObject<E, V>(
+export default function buildObject<E, V>(
   elements: Iterable<E>,
   keys: string[],
   valueSource: { [key: string]: V | undefined }
@@ -518,7 +518,7 @@ export declare function buildObject<E, V>(
  * @param keys The array of keys.
  * @param fixedValue The value to use for all properties.
  */
-export declare function buildObject<E, V extends Primitive>(
+export default function buildObject<E, V extends Primitive>(
   elements: Iterable<E>,
   keys: string[],
   fixedValue: V
@@ -551,7 +551,7 @@ export declare function buildObject<E, V extends Primitive>(
  * @param keysSource An object with properties named by `elements`, whose values become the keys.
  * @param valueFunc The function that calculates property values from keys and/or elements.
  */
-export declare function buildObject<E extends string, V>(
+export default function buildObject<E extends string, V>(
   elements: Iterable<E>,
   keySource: { [key: string]: string | undefined },
   valueFunc: (
@@ -573,7 +573,7 @@ export declare function buildObject<E extends string, V>(
  * @param keysSource An object with properties named by `elements`, whose values become the keys.
  * @param values The property values.
  */
-export declare function buildObject<E, V>(
+export default function buildObject<E, V>(
   elements: Iterable<E>,
   keySource: { [key: string]: string | undefined },
   values: V[]
@@ -589,7 +589,7 @@ export declare function buildObject<E, V>(
  * @param keysSource An object with properties named by `elements`, whose values become the keys.
  * @param valueSource The object that provides the property values.
  */
-export declare function buildObject<E, V>(
+export default function buildObject<E, V>(
   elements: Iterable<E>,
   keySource: { [key: string]: string | undefined },
   valueSource: { [key: string]: V | undefined }
@@ -605,7 +605,7 @@ export declare function buildObject<E, V>(
  * @param keysSource An object with properties named by `elements`, whose values become the keys.
  * @param fixedValue The value to use for all properties.
  */
-export declare function buildObject<E, V extends Primitive>(
+export default function buildObject<E, V extends Primitive>(
   elements: Iterable<E>,
   keySource: { [key: string]: string | undefined },
   fixedValue: V
