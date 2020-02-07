@@ -1,0 +1,3 @@
+var typedoc = typedoc || {};
+            typedoc.search = typedoc.search || {};
+            typedoc.search.data = {"kinds":{"64":"Function","4194304":"Type alias"},"rows":[{"id":0,"kind":64,"name":"buildObject","url":"globals.html#buildobject","classes":"tsd-kind-function tsd-has-type-parameter"},{"id":1,"kind":4194304,"name":"Primitive","url":"globals.html#primitive","classes":"tsd-kind-type-alias"}]};
