@@ -1,6 +1,14 @@
-/// <reference path = "index.d.ts" />
+export default buildObject;
 
-export default function buildObject<E, V>(
+/**
+ * Create a new object as a shallow clone of the given object.
+ * @param source The object to clone.
+ */
+function buildObject<V>(source: {
+  [key: string]: V | undefined;
+}): { [key: string]: V | undefined };
+
+function buildObject<E, V>(
   ...args:
     | [KeyAndValueSource<V>]
     | [KeyAndElementSource<E>, ValueSupplier<E, V>]
@@ -281,5 +289,3 @@ type KeyAndValueSource<V> =
   | ObjectOf<V>
   | Iterable<Entry<V>>
   | Iterable<EntryObject<V>>;
-
-/* eslint-disable import/export */
