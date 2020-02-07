@@ -9,16 +9,30 @@ script:
 
 jobs:
   include:
-    - name: audit 🕴️
+    - stage: test
+      name: audit 🕴️
       node_js: "stable"
       script: npm audit
-    - stage: publish docs 📜
+    - stage: deploy
+      name: publish github pages 📜
       script: npm run docs
       deploy:
         edge: true # opt in to dpl v2
         provider: pages:git
         token: $GITHUB_TOKEN
         local_dir: out/docs
+        cleanup: false
+        verbose: true
+        on:
+          branch: master
+    - stage: deploy
+      name: publish npm 📦
+      script: skip
+      deploy:
+        edge: true # opt in to dpl v2
+        provider: npm
+        api_token: $NPM_AUTH_TOKEN
+        dry_run: true
         cleanup: false
         verbose: true
         on:
