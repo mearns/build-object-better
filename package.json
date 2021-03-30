@@ -1,6 +1,6 @@
 {
   "name": "build-object-better",
-  "version": "1.2.6",
+  "version": "1.2.7-dev",
   "description": "Utilities for building out an object from properties",
   "main": "dist/build-object-better.js",
   "types": "dist/index.d.ts",
