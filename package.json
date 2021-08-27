@@ -1,6 +1,6 @@
 {
   "name": "build-object-better",
-  "version": "1.2.8-dev",
+  "version": "1.2.8",
   "description": "Utilities for building out an object from properties",
   "main": "dist/build-object-better.js",
   "types": "dist/index.d.ts",
@@ -23,7 +23,7 @@
   },
   "homepage": "https://github.com/mearns/build-object-better/",
   "engines": {
-    "node": ">=8 <16"
+    "node": ">=8 <=16"
   },
   "scripts": {
     "clean": "rimraf dist/ out/ build/ coverage/ .nyc_output/",
@@ -87,6 +87,5 @@
     "ts-node": "8.6.2",
     "typedoc": "0.16.9",
     "typescript": "3.7.5"
-  },
-  "dependencies": {}
+  }
 }
