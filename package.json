@@ -1,6 +1,6 @@
 {
   "name": "build-object-better",
-  "version": "1.2.7",
+  "version": "1.2.8-dev",
   "description": "Utilities for building out an object from properties",
   "main": "dist/build-object-better.js",
   "types": "dist/index.d.ts",
@@ -23,7 +23,7 @@
   },
   "homepage": "https://github.com/mearns/build-object-better/",
   "engines": {
-    "node": ">=8 <=13"
+    "node": ">=8 <16"
   },
   "scripts": {
     "clean": "rimraf dist/ out/ build/ coverage/ .nyc_output/",
@@ -32,9 +32,7 @@
     "test": "nyc npm run test-only",
     "test-only": "mocha -r ts-node/register ./test/**/*.spec.*",
     "verify": "npm run check && npm run test",
-    "check:readme": "remark --no-stdout README.md",
-    "check:code": "eslint ./ test/ --ext .js --ext .ts --format codeframe",
-    "check": "npm run check:code && npm run check:readme",
+    "check": "eslint ./ test/ --ext .js --ext .ts --format codeframe",
     "compile": "tsc && cp index.d.ts dist/ && echo 'module.exports = require(\"./index.js\").default;' > dist/build-object-better.js",
     "build": "npm run clean && npm run compile && npm run verify",
     "docs": "typedoc --out out/docs --mode file --includeVersion --exclude \"+(node_modules|dist|out)/**/*\" --includeDeclarations index.d.ts",
@@ -83,7 +81,6 @@
     "nyc": "14.1.1",
     "prettier": "1.19.1",
     "pretty-quick": "2.0.1",
-    "remark-cli": "7.0.0",
     "rimraf": "2.6.2",
     "sinon": "7.2.3",
     "sinon-chai": "3.3.0",
